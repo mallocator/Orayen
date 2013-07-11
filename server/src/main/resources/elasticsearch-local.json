@@ -1,0 +1,24 @@
+{
+	"cluster": {
+		"name": "orayen"
+	},
+	"discovery": {
+		"enabled": false
+	},
+	"node": {
+		"local": true,
+		"data": true,
+		"client": false
+	},
+	"index": {
+		"store": {
+			"type": "memory"
+		}
+	},
+	"gateway": {
+	    "type": "none" 
+	},
+	"path": {
+    	"data": "target/elasticsearch"
+    }
+}

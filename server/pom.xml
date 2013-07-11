@@ -4,14 +4,46 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>net.pyxzl</groupId>
 	<artifactId>orayen</artifactId>
+	<name>Orayen Server</name>
+	<description>A configuration management service with libraries for a number of languages to register for changes and query for updates.</description>
+	<url>https://github.com/mallocator/Orayen</url>
+	<inceptionYear>2013</inceptionYear>
 	<version>0.0.1-SNAPSHOT</version>
+
+	<licenses>
+		<license>
+			<name>Apache License 2.0</name>
+			<url>http://www.spdx.org/licenses/Apache-2.0</url>
+		</license>
+	</licenses>
+
+	<scm>
+		<url>https://github.com/mallocator/Orayen</url>
+		<connection>scm:git:git://github.com/mallocator/Orayen.git</connection>
+		<developerConnection>scm:git:git@github.com:mallocator/Orayen.git</developerConnection>
+	</scm>
+
+	<issueManagement>
+		<system>GitHub</system>
+		<url>https://github.com/mallocator/Orayen/issues</url>
+	</issueManagement>
+
+	<developers>
+		<developer>
+			<name>Ravi Gairola</name>
+			<email>mallox@pyxzl.net</email>
+			<id>mallocator</id>
+			<url>https://github.com/mallocator</url>
+		</developer>
+	</developers>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.build.timestamp.format>yyyy-MM-dd HH:mm</maven.build.timestamp.format>
 		<java.version>1.7</java.version>
-		
+
 		<version.elasticsearch>0.90.2</version.elasticsearch>
+		<version.dagger>1.0.1</version.dagger>
 
 		<version.groovy>2.1.5</version.groovy>
 		<version.groovy.compiler>2.8.0-01</version.groovy.compiler>
@@ -29,10 +61,23 @@
 	</properties>
 
 	<dependencies>
+		<!-- Clustered NoSQL Database -->
 		<dependency>
 			<groupId>org.elasticsearch</groupId>
 			<artifactId>elasticsearch</artifactId>
 			<version>${version.elasticsearch}</version>
+		</dependency>
+		<!-- Dependency Injection Framework -->
+		<dependency>
+			<groupId>com.squareup.dagger</groupId>
+			<artifactId>dagger</artifactId>
+			<version>${version.dagger}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.squareup.dagger</groupId>
+			<artifactId>dagger-compiler</artifactId>
+			<version>${version.dagger}</version>
+			<optional>true</optional>
 		</dependency>
 
 		<!-- Required for logging -->
@@ -59,6 +104,12 @@
 			<artifactId>groovy-testng</artifactId>
 			<version>${version.groovy.testng}</version>
 			<scope>test</scope>
+			<exclusions>
+                <exclusion>
+                    <groupId>junit</groupId>
+                    <artifactId>junit</artifactId>
+                </exclusion>
+            </exclusions>
 		</dependency>
 	</dependencies>
 

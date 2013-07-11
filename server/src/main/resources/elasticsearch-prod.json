@@ -1,0 +1,26 @@
+{
+    "cluster": {
+        "name": "orayen"
+    },
+    "path": {
+        "data": "data/elasticsearch"
+    },
+    "index" : {
+        "analysis" : {
+            "filter" : {
+                "ngram_filter": {
+                    "type" : "nGram",
+                    "min_gram" : 2,
+                    "max_gram": 50
+                }
+            },
+            "analyzer": {
+                "ngram_analyzer": {
+                    "type": "custom",
+                    "tokenizer": "standard",
+                    "filter": "lowercase,ngram_filter"
+                }
+            }
+        }
+    }
+}
