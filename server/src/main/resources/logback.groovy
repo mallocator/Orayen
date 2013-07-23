@@ -11,7 +11,7 @@ import static ch.qos.logback.core.spi.FilterReply.DENY
 
 def mainPackage = 'net.pyxzl.orayen'
 def project = 'orayen'
-def logpath = System.properties.'logging.dir'
+def logpath = System.properties.'logging.dir' ?: 'target/logs/'
 def logpattern = "%d{MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
 def rollingPattern = "%d{yyyy-MM-dd}"
 
@@ -51,5 +51,5 @@ appender("ROOT", RollingFileAppender) {
 	}
 }
 
-Logger(mainPackage, INFO, ["FILE", "ERROR_FILE", "STDOUT"], false)
+logger(mainPackage, INFO, ["FILE", "ERROR_FILE", "STDOUT"], false)
 root(INFO, ["ROOT"])

@@ -43,7 +43,7 @@
 		<java.version>1.7</java.version>
 
 		<version.elasticsearch>0.90.2</version.elasticsearch>
-		<version.dagger>1.0.1</version.dagger>
+		<version.restlet>2.0.0</version.restlet>
 
 		<version.groovy>2.1.5</version.groovy>
 		<version.groovy.compiler>2.8.0-01</version.groovy.compiler>
@@ -60,6 +60,14 @@
 		<version.maven.jar>2.4</version.maven.jar>
 	</properties>
 
+	<repositories>
+		<repository>
+			<id>maven-restlet</id>
+			<name>Public online Restlet repository</name>
+			<url>http://maven.restlet.org</url>
+		</repository>
+	</repositories>
+
 	<dependencies>
 		<!-- Clustered NoSQL Database -->
 		<dependency>
@@ -67,17 +75,21 @@
 			<artifactId>elasticsearch</artifactId>
 			<version>${version.elasticsearch}</version>
 		</dependency>
-		<!-- Dependency Injection Framework -->
+		<!-- REST Server -->
 		<dependency>
-			<groupId>com.squareup.dagger</groupId>
-			<artifactId>dagger</artifactId>
-			<version>${version.dagger}</version>
-		</dependency>
+			<groupId>org.restlet.jse</groupId>
+			<artifactId>org.restlet</artifactId>
+			<version>${version.restlet}</version>
+		</dependency>		
 		<dependency>
-			<groupId>com.squareup.dagger</groupId>
-			<artifactId>dagger-compiler</artifactId>
-			<version>${version.dagger}</version>
-			<optional>true</optional>
+			<groupId>org.restlet.jse</groupId>
+			<artifactId>org.restlet.ext.netty</artifactId>
+			<version>${version.restlet}</version>
+		</dependency>		
+		<dependency>
+			<groupId>org.restlet.jse</groupId>
+			<artifactId>org.restlet.ext.jackson</artifactId>
+			<version>${version.restlet}</version>
 		</dependency>
 
 		<!-- Required for logging -->
@@ -105,11 +117,11 @@
 			<version>${version.groovy.testng}</version>
 			<scope>test</scope>
 			<exclusions>
-                <exclusion>
-                    <groupId>junit</groupId>
-                    <artifactId>junit</artifactId>
-                </exclusion>
-            </exclusions>
+				<exclusion>
+					<groupId>junit</groupId>
+					<artifactId>junit</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 	</dependencies>
 
