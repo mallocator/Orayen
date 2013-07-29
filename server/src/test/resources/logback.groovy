@@ -12,4 +12,5 @@ appender("STDOUT", ConsoleAppender) {
 }
 
 logger(mainPackage, INFO, ["STDOUT"], false)
+logger("org.restlet", INFO, ["STDOUT"], false)
 root(INFO, ["STDOUT"])

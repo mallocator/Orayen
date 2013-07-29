@@ -58,6 +58,7 @@
 		<version.findbugs>2.5.2</version.findbugs>
 		<version.checkstyle>2.10</version.checkstyle>
 		<version.maven.jar>2.4</version.maven.jar>
+		<version.maven.assembly>2.4</version.maven.assembly>
 	</properties>
 
 	<repositories>
@@ -80,16 +81,27 @@
 			<groupId>org.restlet.jse</groupId>
 			<artifactId>org.restlet</artifactId>
 			<version>${version.restlet}</version>
-		</dependency>		
+		</dependency>
 		<dependency>
 			<groupId>org.restlet.jse</groupId>
 			<artifactId>org.restlet.ext.netty</artifactId>
 			<version>${version.restlet}</version>
-		</dependency>		
+		</dependency>
 		<dependency>
 			<groupId>org.restlet.jse</groupId>
 			<artifactId>org.restlet.ext.jackson</artifactId>
 			<version>${version.restlet}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.restlet.jse</groupId>
+			<artifactId>org.restlet.ext.slf4j</artifactId>
+			<version>${version.restlet}</version>
+			<exclusions>
+				<exclusion>
+					<artifactId>slf4j-api</artifactId>
+					<groupId>org.slf4j</groupId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 
 		<!-- Required for logging -->
@@ -210,10 +222,12 @@
 				<artifactId>maven-jar-plugin</artifactId>
 				<version>${version.maven.jar}</version>
 				<configuration>
-					<manifest>
-						<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
-					</manifest>
 					<archive>
+						<manifest>
+							<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+							<addClasspath>true</addClasspath>
+							<mainClass>net.pyxzl.orayen.Main</mainClass>
+						</manifest>
 						<manifestEntries>
 							<name>${project.name}</name>
 							<version>${project.version}</version>
@@ -225,6 +239,41 @@
 						</manifestEntries>
 					</archive>
 				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<version>${version.maven.assembly}</version>
+				<configuration>
+					<descriptorRefs>
+						<descriptorRef>jar-with-dependencies</descriptorRef>
+					</descriptorRefs>
+					<archive>
+						<manifest>
+							<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+							<addClasspath>true</addClasspath>
+							<mainClass>net.pyxzl.orayen.Main</mainClass>
+						</manifest>
+						<manifestEntries>
+							<name>${project.name}</name>
+							<version>${project.version}</version>
+							<package>${project.groupId}.${project.artifactId}</package>
+							<compiledFor>Java ${java.version}</compiledFor>
+							<compiledOn>${os.name} ${os.arch} ${os.version}</compiledOn>
+							<compiledBy>${user.name}</compiledBy>
+							<buildTime>${maven.build.timestamp}</buildTime>
+						</manifestEntries>
+					</archive>
+				</configuration>
+				<executions>
+					<execution>
+						<id>assemble-all</id>
+						<phase>package</phase>
+						<goals>
+							<goal>single</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>

@@ -1,3 +1,4 @@
+
 package net.pyxzl.orayen
 
 import groovy.json.JsonSlurper
@@ -7,14 +8,15 @@ import groovy.util.logging.Slf4j
 @Singleton
 class Config {
 	static enum Setting {
+		CONFIG('conf/orayen.json'),
 		ENV('local'),
 		PORT('7331'),
 		ADMIN_PORT('8080'),
-		CONFIG('conf/orayen.json'),
-		ES_CONFIG('conf/elasticsearch.json')
+		ADMIN_ROOT('clap://system/web/'),
 
 		def value;
 		final def defaultValue;
+
 		Setting(def value) {
 			this.defaultValue = value
 		}
@@ -24,19 +26,20 @@ class Config {
 		}
 	}
 
-	Config() {
-		System.props.each { String k, v ->
+	private Config() {
+		log.debug "Reading Configuration"
+		System.props.each { String k, String v ->
 			if (k.startsWith('orayen_')) {
-				Setting.valueOf(k.substring(7).toUpperCase())?.value = v
+				Setting.valueOf(k.substring(7).toUpperCase())?.value = v.trim()
 			}
 		}
 		try {
-			new JsonSlurper().parseText(new File(Setting.CONFIG.value)?.text)?.each { String k, v ->
-				Setting.valueOf(k.toUpperCase())?.value = v
+			new JsonSlurper().parseText(new File(Setting.CONFIG.value)?.text)?.each { String k, String v ->
+				Setting.valueOf(k.toUpperCase())?.value = v.trim()
 			};
 		} catch (FileNotFoundException e) {
 			log.info "No configuration could be found at ${Setting.CONFIG.value}, falling back to defaults"
-			log.info('',e)
+			log.trace('',e)
 		}
 	}
 }

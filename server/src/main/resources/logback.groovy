@@ -52,4 +52,5 @@ appender("ROOT", RollingFileAppender) {
 }
 
 logger(mainPackage, INFO, ["FILE", "ERROR_FILE", "STDOUT"], false)
+logger("org.restlet", ALL, ["FILE", "ERROR_FILE", "STDOUT"], false)
 root(INFO, ["ROOT"])
