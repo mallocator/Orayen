@@ -5,12 +5,15 @@
     "path": {
         "data": "data/elasticsearch"
     },
-    "index" : {
-        "analysis" : {
-            "filter" : {
+    "http": {
+    	"enabled": false
+    },
+    "index": {
+        "analysis": {
+            "filter": {
                 "ngram_filter": {
-                    "type" : "nGram",
-                    "min_gram" : 2,
+                    "type": "nGram",
+                    "min_gram": 2,
                     "max_gram": 50
                 }
             },

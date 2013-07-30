@@ -1,0 +1,6 @@
+{
+	config:{
+		_timestamp:{ enabled:true },
+		_parent:{ type:"client" }
+	}
+}

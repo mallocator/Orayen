@@ -7,6 +7,7 @@ import groovy.util.logging.Slf4j
 import net.pyxzl.orayen.restendpoints.ClientResource
 import net.pyxzl.orayen.restendpoints.ConfigResource
 import net.pyxzl.orayen.restendpoints.RegisterResource
+import net.pyxzl.orayen.service.EsService
 
 import org.restlet.Application
 import org.restlet.Component
@@ -23,6 +24,7 @@ class Main extends Application {
 	static main(args) {
 		System.props.setProperty("org.restlet.engine.loggerFacadeClass","org.restlet.ext.slf4j.Slf4jLoggerFacade")
 		Config.instance
+		EsService.instance
 		new Main()
 	}
 
@@ -47,16 +49,20 @@ class Main extends Application {
 		component.getServers().add(Protocol.HTTP, Config.Setting.PORT.value as int)
 		component.getDefaultHost().attach("", router)
 		component.start()
+
+		log.info "Started REST server on port ${Config.Setting.PORT}"
 	}
 
 	private setWebEndpoints() {
 		final Component component = new Component()
 		final Directory dir = new Directory(getContext(), Config.Setting.ADMIN_ROOT.value)
-		dir.setListingAllowed(true);
+		dir.setListingAllowed(Config.Setting.ENV.value.equals("dev"))
 
 		component.getClients().add(Config.Setting.ADMIN_ROOT.value.startsWith("clap") ? Protocol.CLAP : Protocol.FILE)
 		component.getServers().add(Protocol.HTTP, Config.Setting.ADMIN_PORT.value as int)
 		component.getDefaultHost().attach("", dir)
 		component.start()
+
+		log.info "Started Web server on port ${Config.Setting.ADMIN_PORT}"
 	}
 }

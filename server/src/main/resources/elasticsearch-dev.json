@@ -10,11 +10,16 @@
 		"data": true,
 		"client": false
 	},
+	"index": {
+		"store": {
+			"type": "memory"
+		}
+	},
 	"gateway": {
 	    "type": "none" 
 	},
 	"path": {
-        "data": "data/elasticsearch"
+    	"data": "target/elasticsearch"
     },
     "index" : {
         "analysis" : {
@@ -33,5 +38,5 @@
                 }
             }
         }
-	}
+    }
 }

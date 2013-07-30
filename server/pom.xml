@@ -43,6 +43,7 @@
 		<java.version>1.7</java.version>
 
 		<version.elasticsearch>0.90.2</version.elasticsearch>
+		<version.elasticsearch.groovy>1.5.0</version.elasticsearch.groovy>
 		<version.restlet>2.0.0</version.restlet>
 
 		<version.groovy>2.1.5</version.groovy>
@@ -75,6 +76,11 @@
 			<groupId>org.elasticsearch</groupId>
 			<artifactId>elasticsearch</artifactId>
 			<version>${version.elasticsearch}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.elasticsearch</groupId>
+			<artifactId>elasticsearch-lang-groovy</artifactId>
+			<version>${version.elasticsearch.groovy}</version>
 		</dependency>
 		<!-- REST Server -->
 		<dependency>

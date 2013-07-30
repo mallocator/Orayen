@@ -1,5 +1,6 @@
-import ch.qos.logback.classic.filter.LevelFilter;
+import java.util.logging.Logger;
 
+import ch.qos.logback.classic.filter.LevelFilter;
 import static ch.qos.logback.classic.Level.ALL
 import static ch.qos.logback.classic.Level.DEBUG
 import static ch.qos.logback.classic.Level.INFO
@@ -13,6 +14,7 @@ def mainPackage = 'net.pyxzl.orayen'
 def project = 'orayen'
 def logpath = System.properties.'logging.dir' ?: 'target/logs/'
 def logpattern = "%d{MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
+def accesspattern = "%msg%n"
 def rollingPattern = "%d{yyyy-MM-dd}"
 
 appender("STDOUT", ConsoleAppender) {
@@ -24,6 +26,19 @@ appender("FILE", RollingFileAppender) {
 	encoder(PatternLayoutEncoder) { pattern = logpattern }
 	rollingPolicy(TimeBasedRollingPolicy) {
 		fileNamePattern = logpath + project + "." + rollingPattern + ".log"
+		maxHistory = 31
+	}
+}
+
+appender("ACCESS_STDOUT", ConsoleAppender) {
+	encoder(PatternLayoutEncoder) { pattern = accesspattern }
+}
+
+appender("ACCESS_FILE", RollingFileAppender) {
+	file = logpath + project +".access.log"
+	encoder(PatternLayoutEncoder) { pattern = accesspattern }
+	rollingPolicy(TimeBasedRollingPolicy) {
+		fileNamePattern = logpath + project + ".access." + rollingPattern + ".log"
 		maxHistory = 31
 	}
 }
@@ -52,5 +67,7 @@ appender("ROOT", RollingFileAppender) {
 }
 
 logger(mainPackage, INFO, ["FILE", "ERROR_FILE", "STDOUT"], false)
-logger("org.restlet", ALL, ["FILE", "ERROR_FILE", "STDOUT"], false)
-root(INFO, ["ROOT"])
+logger("org.restlet", WARN, ["FILE", "ERROR_FILE", "STDOUT"], false)
+logger("LogService", INFO, ["ACCESS_FILE", "ERROR_FILE", "ACCESS_STDOUT"], false)
+logger("org.elasticsearch", WARN, ["FILE", "ERROR_FILE", "STDOUT"], false)
+root(INFO, ["ROOT", "ERROR_FILE"])

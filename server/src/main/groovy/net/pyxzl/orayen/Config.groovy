@@ -8,21 +8,27 @@ import groovy.util.logging.Slf4j
 @Singleton
 class Config {
 	static enum Setting {
-		CONFIG('conf/orayen.json'),
+		CONFIG('orayen.json'),
 		ENV('local'),
 		PORT('7331'),
 		ADMIN_PORT('8080'),
 		ADMIN_ROOT('clap://system/web/'),
+		ES_INDEX('orayen'),
 
-		def value;
-		final def defaultValue;
+		def value
+		final def defaultValue
 
 		Setting(def value) {
 			this.defaultValue = value
 		}
 
 		def getValue() {
-			return value ?: defaultValue;
+			return value ?: defaultValue
+		}
+
+		@Override
+		String toString() {
+			return "[" + super.toString().toLowerCase() + ": " + getValue() + "]"
 		}
 	}
 
@@ -36,9 +42,9 @@ class Config {
 		try {
 			new JsonSlurper().parseText(new File(Setting.CONFIG.value)?.text)?.each { String k, String v ->
 				Setting.valueOf(k.toUpperCase())?.value = v.trim()
-			};
+			}
 		} catch (FileNotFoundException e) {
-			log.info "No configuration could be found at ${Setting.CONFIG.value}, falling back to defaults"
+			log.info "No configuration could be found at ${Setting.CONFIG}, falling back to defaults"
 			log.trace('',e)
 		}
 	}
