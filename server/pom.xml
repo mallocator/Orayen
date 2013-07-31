@@ -59,7 +59,8 @@
 		<version.findbugs>2.5.2</version.findbugs>
 		<version.checkstyle>2.10</version.checkstyle>
 		<version.maven.jar>2.4</version.maven.jar>
-		<version.maven.assembly>2.4</version.maven.assembly>
+		<version.maven.dependency>2.8</version.maven.dependency>
+		<version.maven.resources>2.6</version.maven.resources>
 	</properties>
 
 	<repositories>
@@ -224,6 +225,7 @@
 					</execution>
 				</executions>
 			</plugin>
+			<!-- Used to create the main jar in the package directory -->
 			<plugin>
 				<artifactId>maven-jar-plugin</artifactId>
 				<version>${version.maven.jar}</version>
@@ -231,8 +233,8 @@
 					<archive>
 						<manifest>
 							<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
-							<addClasspath>true</addClasspath>
 							<mainClass>net.pyxzl.orayen.Main</mainClass>
+							<addClasspath>true</addClasspath>
 						</manifest>
 						<manifestEntries>
 							<name>${project.name}</name>
@@ -244,40 +246,64 @@
 							<buildTime>${maven.build.timestamp}</buildTime>
 						</manifestEntries>
 					</archive>
+					<outputDirectory>${project.build.directory}/package</outputDirectory>
+					<finalName>Orayen</finalName>
 				</configuration>
 			</plugin>
+			<!-- Used to copy dependendent libraries into package directory -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-assembly-plugin</artifactId>
-				<version>${version.maven.assembly}</version>
-				<configuration>
-					<descriptorRefs>
-						<descriptorRef>jar-with-dependencies</descriptorRef>
-					</descriptorRefs>
-					<archive>
-						<manifest>
-							<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
-							<addClasspath>true</addClasspath>
-							<mainClass>net.pyxzl.orayen.Main</mainClass>
-						</manifest>
-						<manifestEntries>
-							<name>${project.name}</name>
-							<version>${project.version}</version>
-							<package>${project.groupId}.${project.artifactId}</package>
-							<compiledFor>Java ${java.version}</compiledFor>
-							<compiledOn>${os.name} ${os.arch} ${os.version}</compiledOn>
-							<compiledBy>${user.name}</compiledBy>
-							<buildTime>${maven.build.timestamp}</buildTime>
-						</manifestEntries>
-					</archive>
-				</configuration>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<version>${version.maven.dependency}</version>
 				<executions>
 					<execution>
-						<id>assemble-all</id>
 						<phase>package</phase>
 						<goals>
-							<goal>single</goal>
+							<goal>copy-dependencies</goal>
 						</goals>
+						<configuration>
+							<includeScope>compile</includeScope>
+							<outputDirectory>${project.build.directory}/package/lib</outputDirectory>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<!-- Used to copy shell scripts and web content to the package directory -->
+			<plugin>
+				<artifactId>maven-resources-plugin</artifactId>
+				<version>${version.maven.resources}</version>
+				<executions>
+					<execution>
+						<id>shell scripts</id>
+						<phase>package</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${project.build.directory}/package/</outputDirectory>
+							<resources>
+								<resource>
+									<directory>src/main/shell</directory>
+									<filtering>true</filtering>
+								</resource>
+							</resources>
+						</configuration>
+					</execution>
+					<execution>
+						<id>web content</id>
+						<phase>package</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${project.build.directory}/package/web</outputDirectory>
+							<resources>
+								<resource>
+									<directory>src/main/web</directory>
+									<filtering>true</filtering>
+								</resource>
+							</resources>
+						</configuration>
 					</execution>
 				</executions>
 			</plugin>

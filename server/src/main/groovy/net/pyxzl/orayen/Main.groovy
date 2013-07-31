@@ -1,6 +1,3 @@
-/**
- *
- */
 package net.pyxzl.orayen
 
 import groovy.util.logging.Slf4j
@@ -9,6 +6,7 @@ import net.pyxzl.orayen.restendpoints.ConfigResource
 import net.pyxzl.orayen.restendpoints.RegisterResource
 import net.pyxzl.orayen.service.EsService
 
+import org.jboss.netty.channel.ChannelException
 import org.restlet.Application
 import org.restlet.Component
 import org.restlet.data.Protocol
@@ -48,7 +46,13 @@ class Main extends Application {
 
 		component.getServers().add(Protocol.HTTP, Config.Setting.PORT.value as int)
 		component.getDefaultHost().attach("", router)
-		component.start()
+		try {
+			component.start()
+		} catch (BindException | ChannelException e) {
+			log.error "Unable to bind port ${Config.Setting.PORT} for the REST interface, it's in use by another process"
+			log.debug("", e)
+			System.exit 1
+		}
 
 		log.info "Started REST server on port ${Config.Setting.PORT}"
 	}
@@ -61,8 +65,14 @@ class Main extends Application {
 		component.getClients().add(Config.Setting.ADMIN_ROOT.value.startsWith("clap") ? Protocol.CLAP : Protocol.FILE)
 		component.getServers().add(Protocol.HTTP, Config.Setting.ADMIN_PORT.value as int)
 		component.getDefaultHost().attach("", dir)
-		component.start()
+		try {
+			component.start()
+		} catch (BindException | ChannelException e) {
+			log.error "Unable to bind port ${Config.Setting.ADMIN_PORT} for the admin interface, it's in use by another process"
+			log.debug("", e)
+			System.exit 1
+		}
 
-		log.info "Started Web server on port ${Config.Setting.ADMIN_PORT}"
+		log.info "Started admin interface on port ${Config.Setting.ADMIN_PORT}"
 	}
 }

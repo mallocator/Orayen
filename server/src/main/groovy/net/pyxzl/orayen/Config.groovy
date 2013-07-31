@@ -12,7 +12,7 @@ class Config {
 		ENV('local'),
 		PORT('7331'),
 		ADMIN_PORT('8080'),
-		ADMIN_ROOT('clap://system/web/'),
+		ADMIN_ROOT('file:///var/www/orayen/'),
 		ES_INDEX('orayen'),
 
 		def value

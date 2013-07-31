@@ -1,5 +1,6 @@
 import java.util.logging.Logger;
 
+import net.pyxzl.orayen.Config;
 import ch.qos.logback.classic.filter.LevelFilter;
 import static ch.qos.logback.classic.Level.ALL
 import static ch.qos.logback.classic.Level.DEBUG
@@ -12,7 +13,7 @@ import static ch.qos.logback.core.spi.FilterReply.DENY
 
 def mainPackage = 'net.pyxzl.orayen'
 def project = 'orayen'
-def logpath = System.properties.'logging.dir' ?: 'target/logs/'
+def logpath = System.properties.'logging.dir' ?: Config.Setting.ENV.value.equals("dev") ? 'target/logs/' : 'logs/'
 def logpattern = "%d{MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
 def accesspattern = "%msg%n"
 def rollingPattern = "%d{yyyy-MM-dd}"
