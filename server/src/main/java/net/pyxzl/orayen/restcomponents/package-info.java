@@ -3,4 +3,4 @@
  * 
  * @author Ravi Gairola (mallox@pyxzl.net)
  */
-package net.pyxzl.orayen.restendpoints;
+package net.pyxzl.orayen.restcomponents;

@@ -50,7 +50,8 @@ JAVA_OPTS="$JAVA_OPTS -Xms1000m"
 JAVA_OPTS="$JAVA_OPTS -Xmx1000m"
 JAVA_OPTS="$JAVA_OPTS -server"
 JAVA_OPTS="$JAVA_OPTS -Dlogging.dir=$DAEMON_HOME/logs/"
-JAVA_OPTS="$JAVA_OPTS -Dorayen_admin_root=file://$DAEMON_HOME/web/\
+JAVA_OPTS="$JAVA_OPTS -Dorayen_admin_root=file://$DAEMON_HOME/web/"
+JAVA_OPTS="$JAVA_OPTS -Dorayen_env=prod"
 
 if [ ! -f "$DAEMON" ]; then
     log_failure_msg "missing $DAEMON"

@@ -1,7 +1,7 @@
-import java.util.logging.Logger;
+import java.util.logging.Logger
 
-import net.pyxzl.orayen.Config;
-import ch.qos.logback.classic.filter.LevelFilter;
+import net.pyxzl.orayen.Config.Setting
+import ch.qos.logback.classic.filter.LevelFilter
 import static ch.qos.logback.classic.Level.ALL
 import static ch.qos.logback.classic.Level.DEBUG
 import static ch.qos.logback.classic.Level.INFO
@@ -13,8 +13,12 @@ import static ch.qos.logback.core.spi.FilterReply.DENY
 
 def mainPackage = 'net.pyxzl.orayen'
 def project = 'orayen'
-def logpath = System.properties.'logging.dir' ?: Config.Setting.ENV.value.equals("dev") ? 'target/logs/' : 'logs/'
+def logpath = System.properties.'logging.dir' ?: Setting.ENV.value.equals("dev") ? 'target/logs/' : 'logs/'
 def logpattern = "%d{MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
+if (!System.properties['os.name'].toLowerCase().contains('windows') && !Setting.ENV.value.equals("dev") && Setting.NO_COLOR.value.equals("true")) {
+	logpattern = "%d{MM-dd HH:mm:ss.SSS} %gray([%thread]) %highlight(%-5level) %cyan(%logger{24}) - %msg%n"
+}
+
 def accesspattern = "%msg%n"
 def rollingPattern = "%d{yyyy-MM-dd}"
 
@@ -67,8 +71,24 @@ appender("ROOT", RollingFileAppender) {
 	}
 }
 
-logger(mainPackage, INFO, ["FILE", "ERROR_FILE", "STDOUT"], false)
-logger("org.restlet", WARN, ["FILE", "ERROR_FILE", "STDOUT"], false)
-logger("LogService", INFO, ["ACCESS_FILE", "ERROR_FILE", "ACCESS_STDOUT"], false)
-logger("org.elasticsearch", WARN, ["FILE", "ERROR_FILE", "STDOUT"], false)
+logger(mainPackage, INFO, [
+	"FILE",
+	"ERROR_FILE",
+	"STDOUT"
+], false)
+logger("org.restlet", WARN, [
+	"FILE",
+	"ERROR_FILE",
+	"STDOUT"
+], false)
+logger("LogService", INFO, [
+	"ACCESS_FILE",
+	"ERROR_FILE",
+	"ACCESS_STDOUT"
+], false)
+logger("org.elasticsearch", WARN, [
+	"FILE",
+	"ERROR_FILE",
+	"STDOUT"
+], false)
 root(INFO, ["ROOT", "ERROR_FILE"])

@@ -1,4 +1,4 @@
-package net.pyxzl.orayen.restendpoints;
+package net.pyxzl.orayen.restcomponents;
 
 import groovy.util.logging.Slf4j
 import net.pyxzl.orayen.dto.ConfigDTO

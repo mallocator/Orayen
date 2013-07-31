@@ -1,4 +1,4 @@
-package net.pyxzl.orayen.restendpoints
+package net.pyxzl.orayen.restcomponents
 
 import org.restlet.resource.ResourceException
 import org.restlet.resource.ServerResource

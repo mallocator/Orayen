@@ -8,12 +8,17 @@ import groovy.util.logging.Slf4j
 @Singleton
 class Config {
 	static enum Setting {
-		CONFIG('orayen.json'),
-		ENV('local'),
-		PORT('7331'),
-		ADMIN_PORT('8080'),
-		ADMIN_ROOT('file:///var/www/orayen/'),
-		ES_INDEX('orayen'),
+		CONFIG('config/orayen.json'),				// Location of the configuration file, that will override all default and command line options
+		ENV('local'),								// Possible Environments are: dev, local and prod
+		PORT('7443'),								// Server port on which REST calls can be made via https authentication
+		LOCAL_PORT('7000'),							// Server port on which REST calls can be made without https, but only from localhost
+		ADMIN_PORT('8443'),							// Server port on which the admin interface can be accessed via https
+		LOCAL_ADMIN_PORT('8000'),					// Server port on which the admin interface can be accssed without https, but only from localhost
+		ADMIN_ROOT('file:///var/www/orayen/'),		// Directory in which to look for the web root that holds the admin interface
+		KEYSTORE('config/keystore.jks'),			// Keystore location that holds the certificate information for the server https connector
+		TRUSTSTORE('config/truststore.jks'),		// Truststore location that holds the certificate information for clients trying to access the server
+		ES_INDEX('orayen'),							// ElasticSearch index name
+		NO_COLOR(''),								// Disables coloured command line output when set to "true"
 
 		def value
 		final def defaultValue

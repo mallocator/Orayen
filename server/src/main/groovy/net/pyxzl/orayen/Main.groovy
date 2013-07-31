@@ -1,17 +1,25 @@
 package net.pyxzl.orayen
 
 import groovy.util.logging.Slf4j
-import net.pyxzl.orayen.restendpoints.ClientResource
-import net.pyxzl.orayen.restendpoints.ConfigResource
-import net.pyxzl.orayen.restendpoints.RegisterResource
+import net.pyxzl.orayen.Config.Setting
+import net.pyxzl.orayen.restcomponents.ClientResource
+import net.pyxzl.orayen.restcomponents.ConfigResource
+import net.pyxzl.orayen.restcomponents.KeystoreResource
+import net.pyxzl.orayen.restcomponents.LocalhostFilter
+import net.pyxzl.orayen.restcomponents.RegisterResource
+import net.pyxzl.orayen.restcomponents.UserResource
 import net.pyxzl.orayen.service.EsService
 
-import org.jboss.netty.channel.ChannelException
 import org.restlet.Application
 import org.restlet.Component
+import org.restlet.Restlet
+import org.restlet.Server
+import org.restlet.data.Parameter
 import org.restlet.data.Protocol
 import org.restlet.resource.Directory
+import org.restlet.routing.Filter
 import org.restlet.routing.Router
+import org.restlet.util.Series
 
 /**
  * @author Ravi Gairola (mallox@pyxzl.net)
@@ -32,7 +40,6 @@ class Main extends Application {
 	}
 
 	private setRestEndpoints() {
-		final Component component = new Component()
 		final Router router = new Router()
 		router.setName("REST Router")
 
@@ -43,36 +50,79 @@ class Main extends Application {
 		router.attach("/register/{clientid}", RegisterResource.class)
 		router.attach("/client", ConfigResource.class)
 		router.attach("/client/{clientid}", ClientResource.class)
+		router.attach("/keystore", KeystoreResource.class)
+		router.attach("/user", UserResource.class)
+		router.attach("/user/{userid}", UserResource.class)
 
-		component.getServers().add(Protocol.HTTP, Config.Setting.PORT.value as int)
-		component.getDefaultHost().attach("", router)
-		try {
-			component.start()
-		} catch (BindException | ChannelException e) {
-			log.error "Unable to bind port ${Config.Setting.PORT} for the REST interface, it's in use by another process"
-			log.debug("", e)
-			System.exit 1
-		}
-
-		log.info "Started REST server on port ${Config.Setting.PORT}"
+		this.createComponent(router, Setting.LOCAL_PORT, Setting.PORT, "REST")
 	}
 
 	private setWebEndpoints() {
 		final Component component = new Component()
-		final Directory dir = new Directory(getContext(), Config.Setting.ADMIN_ROOT.value)
-		dir.setListingAllowed(Config.Setting.ENV.value.equals("dev"))
+		final Directory dir = new Directory(getContext(), Setting.ADMIN_ROOT.value)
+		dir.setName("Web Router")
+		dir.setListingAllowed(Setting.ENV.value.equals("dev"))
 
-		component.getClients().add(Config.Setting.ADMIN_ROOT.value.startsWith("clap") ? Protocol.CLAP : Protocol.FILE)
-		component.getServers().add(Protocol.HTTP, Config.Setting.ADMIN_PORT.value as int)
-		component.getDefaultHost().attach("", dir)
-		try {
-			component.start()
-		} catch (BindException | ChannelException e) {
-			log.error "Unable to bind port ${Config.Setting.ADMIN_PORT} for the admin interface, it's in use by another process"
-			log.debug("", e)
-			System.exit 1
+		this.createComponent(dir, Setting.LOCAL_ADMIN_PORT, Setting.ADMIN_PORT, "Web")
+	}
+
+	private createComponent(Restlet restlet, Setting localPort, Setting globalPort, String type) {
+		if (Setting.LOCAL_PORT.value as int) {
+			final Component component = new Component()
+			component.getClients().add(Protocol.FILE)
+			component.getServers().add(Protocol.HTTP, localPort.value as int)
+			final Filter filter = new LocalhostFilter()
+			filter.setContext(component.getContext().createChildContext())
+			filter.setNext(restlet)
+			component.getDefaultHost().attach("", filter)
+			try {
+				component.start()
+			} catch (BindException e) {
+				log.error "Unable to bind port ${localPort} for the local ${type} interface, it's in use by another process"
+				log.debug("", e)
+			}
+
+			log.info "Started local ${type} server on port ${localPort}"
+		} else {
+			log.info "Local ${type} endpoint has been disabled (${localPort})"
 		}
 
-		log.info "Started admin interface on port ${Config.Setting.ADMIN_PORT}"
+		if (Setting.PORT.value as int) {
+			if (!new File(Setting.KEYSTORE.value).exists()) {
+				log.warn "No Keystore at ${Setting.KEYSTORE} -> SSL encryption for ${type} interface has been disabled"
+				return
+			}
+			if (!new File(Setting.TRUSTSTORE.value).exists()) {
+				log.warn "No Truststore at ${Setting.TRUSTSTORE} -> SSL encryption for ${type} interface has been disabled"
+				return
+			}
+
+			final Component component = new Component()
+			component.getClients().add(Protocol.FILE)
+			final Server server = component.getServers().add(Protocol.HTTPS, globalPort.value as int)
+			Series<Parameter> parameters = server.getContext().getParameters()
+			parameters.add("sslContextFactory", "org.restlet.ext.ssl.PkixSslContextFactory")
+			parameters.add("keystorePath", Setting.KEYSTORE)
+			parameters.add("keystoreType", "JKS")
+			parameters.add("keystorePassword", "orayen")
+			parameters.add("keyPassword", "orayen")
+			parameters.add("truststorePath", Setting.TRUSTSTORE)
+			parameters.add("truststoreType", "JKS")
+			parameters.add("truststorePassword", "orayen")
+			parameters.add("disableCrl", "true")
+			parameters.add("wantClientAuthentication", "true")
+			component.getDefaultHost().attach("", restlet)
+			try {
+				component.start()
+			} catch (BindException e) {
+				log.error "Unable to bind port ${globalPort} for the ${type} interface, it's in use by another process"
+				log.debug("", e)
+				System.exit 1
+			}
+
+			log.info "Started ${type} server on port ${globalPort}"
+		} else {
+			log.info "${type} endpoint has been disabled (${globalPort})"
+		}
 	}
 }
