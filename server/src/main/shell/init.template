@@ -17,7 +17,7 @@
 
 set -e
 
-DAEMON_HOME=$DaemonHome$
+DAEMON_HOME=%DaemonHome%
 CLASSPATH=$(echo "$DAEMON_HOME/lib"/*.jar | tr ' ' ':')
 DAEMON_JAR="$DAEMON_HOME/Orayen.jar"
 DAEMON_BOOTSTRAP=net.pyxzl.orayen.Main
@@ -42,14 +42,14 @@ fi
 # Make sure number of open files limit is high enough
 ulimit -n 1048576
 
-# Set to whatever your java home is
-export JAVA_HOME=$JavaHome$
+# Requires Java 1.7
+export JAVA_HOME=%JavaHome%
 
 # Some Java Opts - set your own
 JAVA_OPTS="$JAVA_OPTS -Xms1000m"
 JAVA_OPTS="$JAVA_OPTS -Xmx1000m"
 JAVA_OPTS="$JAVA_OPTS -server"
-JAVA_OPTS="$JAVA_OPTS -Dlogging.dir=$DAEMON_HOME/logs"
+JAVA_OPTS="$JAVA_OPTS -Dlogging.dir=$DAEMON_HOME/logs/"
 JAVA_OPTS="$JAVA_OPTS -Dorayen_admin_root=file://$DAEMON_HOME/web/\
 
 if [ ! -f "$DAEMON" ]; then
