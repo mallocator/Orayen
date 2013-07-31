@@ -54,12 +54,6 @@ else
 	done
 fi
 
-# If the correct Java version is detected, then export the JAVA_HOME environment variable
-if [ $JAVA_HOME ]
-then
-	export JAVA_HOME
-fi
-
 ORAYEN_HOME="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 sed "s/%DaemonHome%/$(echo $ORAYEN_HOME | sed -e 's/\//\\\//g')/g;s/%JavaHome%/$(echo $JAVA_HOME | sed -e 's/\//\\\//g')/g"\
