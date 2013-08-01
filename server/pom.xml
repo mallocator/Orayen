@@ -45,6 +45,7 @@
 		<version.elasticsearch>0.90.2</version.elasticsearch>
 		<version.elasticsearch.groovy>1.5.0</version.elasticsearch.groovy>
 		<version.restlet>2.1.2</version.restlet>
+		<version.bouncycastle>1.49</version.bouncycastle>
 
 		<version.groovy>2.1.5</version.groovy>
 		<version.groovy.compiler>2.8.0-01</version.groovy.compiler>
@@ -75,20 +76,10 @@
 		<!-- Clustered NoSQL Database -->
 		<dependency>
 			<groupId>org.elasticsearch</groupId>
-			<artifactId>elasticsearch</artifactId>
-			<version>${version.elasticsearch}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.elasticsearch</groupId>
 			<artifactId>elasticsearch-lang-groovy</artifactId>
 			<version>${version.elasticsearch.groovy}</version>
 		</dependency>
 		<!-- REST Server -->
-		<dependency>
-			<groupId>org.restlet.jse</groupId>
-			<artifactId>org.restlet</artifactId>
-			<version>${version.restlet}</version>
-		</dependency>
 		<dependency>
 			<groupId>org.restlet.jse</groupId>
 			<artifactId>org.restlet.ext.jackson</artifactId>
@@ -110,6 +101,12 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
+		<dependency>
+			<groupId>org.bouncycastle</groupId>
+			<artifactId>bcprov-jdk15on</artifactId>
+			<version>${version.bouncycastle}</version>
+		</dependency>
+
 
 		<!-- Required for logging -->
 		<dependency>

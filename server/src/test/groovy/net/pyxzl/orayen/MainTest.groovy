@@ -7,11 +7,11 @@ import org.testng.annotations.Test
 
 @Slf4j
 class MainTest {
-	def variable = 'blah'
+	def variable = 'blah blubb'
 
 	@Test
 	void testName() {
 		Assert.assertTrue(true, "Stub test to see if compilation works")
-		log.info "Everything ${variable} seems to be fine."
+		log.info "Everything at ${variable} seems to be fine."
 	}
 }

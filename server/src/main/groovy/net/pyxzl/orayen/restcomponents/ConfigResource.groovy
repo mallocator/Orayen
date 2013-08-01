@@ -1,4 +1,4 @@
-package net.pyxzl.orayen.restcomponents;
+package net.pyxzl.orayen.restcomponents
 
 import groovy.util.logging.Slf4j
 import net.pyxzl.orayen.dto.ConfigDTO
@@ -12,14 +12,13 @@ import org.restlet.resource.ServerResource
 
 @Slf4j
 public class ConfigResource extends ServerResource {
-	private ConfigDTO	config;
+	private ConfigDTO	config
 
 	@Override
 	protected void doInit() throws ResourceException {
-		final String id = (String) getRequest().getAttributes().get("clientid");
-		final String version = (String) getRequest().getAttributes().get("version");
-		this.config = new ConfigDTO(id, DateTime.now(), "{\"config\":\"example\"}");
-		super.doInit();
+		final String id = (String) getRequest().getAttributes().get("clientid")
+		final String version = (String) getRequest().getAttributes().get("version")
+		this.config = new ConfigDTO(id, DateTime.now(), "{\"config\":\"example\"}")
 	}
 
 	/**
@@ -28,7 +27,7 @@ public class ConfigResource extends ServerResource {
 	 */
 	@Get
 	ConfigDTO getConfig() {
-		return this.config;
+		return this.config
 	}
 
 	@Put

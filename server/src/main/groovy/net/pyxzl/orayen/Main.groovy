@@ -8,6 +8,7 @@ import net.pyxzl.orayen.restcomponents.KeystoreResource
 import net.pyxzl.orayen.restcomponents.LocalhostFilter
 import net.pyxzl.orayen.restcomponents.RegisterResource
 import net.pyxzl.orayen.restcomponents.UserResource
+import net.pyxzl.orayen.service.CertGenerator
 import net.pyxzl.orayen.service.EsService
 
 import org.restlet.Application
@@ -31,6 +32,7 @@ class Main extends Application {
 		System.props.setProperty("org.restlet.engine.loggerFacadeClass","org.restlet.ext.slf4j.Slf4jLoggerFacade")
 		Config.instance
 		EsService.instance
+		CertGenerator.instance.createKeyStores()
 		new Main()
 	}
 
@@ -51,6 +53,8 @@ class Main extends Application {
 		router.attach("/client", ConfigResource.class)
 		router.attach("/client/{clientid}", ClientResource.class)
 		router.attach("/keystore", KeystoreResource.class)
+		router.attach("/keystore/{format}", KeystoreResource.class)
+		router.attach("/keystore/{clientid}/{format}", KeystoreResource.class)
 		router.attach("/user", UserResource.class)
 		router.attach("/user/{userid}", UserResource.class)
 
@@ -100,17 +104,17 @@ class Main extends Application {
 			final Component component = new Component()
 			component.getClients().add(Protocol.FILE)
 			final Server server = component.getServers().add(Protocol.HTTPS, globalPort.value as int)
-			Series<Parameter> parameters = server.getContext().getParameters()
+			final Series<Parameter> parameters = server.getContext().getParameters()
 			parameters.add("sslContextFactory", "org.restlet.ext.ssl.PkixSslContextFactory")
-			parameters.add("keystorePath", Setting.KEYSTORE)
+			parameters.add("keystorePath", Setting.KEYSTORE.value)
 			parameters.add("keystoreType", "JKS")
-			parameters.add("keystorePassword", "orayen")
-			parameters.add("keyPassword", "orayen")
-			parameters.add("truststorePath", Setting.TRUSTSTORE)
+			parameters.add("keystorePassword", "OrayenServer")
+			parameters.add("keyPassword", "OrayenServer")
+			parameters.add("truststorePath", Setting.TRUSTSTORE.value)
 			parameters.add("truststoreType", "JKS")
-			parameters.add("truststorePassword", "orayen")
+			parameters.add("truststorePassword", "OrayenServer")
 			parameters.add("disableCrl", "true")
-			parameters.add("wantClientAuthentication", "true")
+			parameters.add("needClientAuthentication", "true")
 			component.getDefaultHost().attach("", restlet)
 			try {
 				component.start()

@@ -17,6 +17,7 @@ class Config {
 		ADMIN_ROOT('file:///var/www/orayen/'),		// Directory in which to look for the web root that holds the admin interface
 		KEYSTORE('config/keystore.jks'),			// Keystore location that holds the certificate information for the server https connector
 		TRUSTSTORE('config/truststore.jks'),		// Truststore location that holds the certificate information for clients trying to access the server
+		CERTSTORE('config/certs/'),					// Directory in which client certificates will be stored
 		ES_INDEX('orayen'),							// ElasticSearch index name
 		NO_COLOR(''),								// Disables coloured command line output when set to "true"
 
