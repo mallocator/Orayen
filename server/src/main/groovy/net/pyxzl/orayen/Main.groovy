@@ -73,7 +73,9 @@ class Main extends Application {
 	private createComponent(Restlet restlet, Setting localPort, Setting globalPort, String type) {
 		if (Setting.LOCAL_PORT.value as int) {
 			final Component component = new Component()
-			component.getClients().add(Protocol.FILE)
+			if (type.equals("Web")) {
+				component.getClients().add(Protocol.FILE)
+			}
 			component.getServers().add(Protocol.HTTP, localPort.value as int)
 			final Filter filter = new LocalhostFilter()
 			filter.setContext(component.getContext().createChildContext())
@@ -114,7 +116,9 @@ class Main extends Application {
 			parameters.add("truststoreType", "JKS")
 			parameters.add("truststorePassword", "OrayenServer")
 			parameters.add("disableCrl", "true")
-			parameters.add("needClientAuthentication", "true")
+			if (type.equals("REST") && false) {
+				parameters.add("needClientAuthentication", "true")
+			}
 			component.getDefaultHost().attach("", restlet)
 			try {
 				component.start()

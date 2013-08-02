@@ -1,1 +1,12 @@
 target/
+.project
+.checkstyle
+.fbExcludeFilterFile
+.classpath
+.settings/
+*.p12
+*.jks
+test-output/
+logs/
+data/
+config/

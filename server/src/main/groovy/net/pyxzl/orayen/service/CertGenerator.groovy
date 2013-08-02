@@ -54,9 +54,9 @@ class CertGenerator {
 
 		Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider())
 
-		final X500PrivateCredential    rootCredential = createRootCredential()
-		final X500PrivateCredential    interCredential = createIntermediateCredential(rootCredential.getPrivateKey(), rootCredential.getCertificate())
-		final X500PrivateCredential    endCredential = createEndEntityCredential(interCredential.getPrivateKey(), interCredential.getCertificate())
+		final X500PrivateCredential rootCredential = createRootCredential()
+		final X500PrivateCredential interCredential = createIntermediateCredential(rootCredential.getPrivateKey(), rootCredential.getCertificate())
+		final X500PrivateCredential endCredential = createEndEntityCredential(interCredential.getPrivateKey(), interCredential.getCertificate())
 
 
 		trustStoreFile.parentFile.mkdirs()

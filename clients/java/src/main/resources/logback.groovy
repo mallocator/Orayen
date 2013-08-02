@@ -1,7 +1,9 @@
-import java.util.logging.Logger
+import ch.qos.logback.core.ConsoleAppender;
+import ch.qos.logback.core.rolling.TimeBasedRollingPolicy;
+import ch.qos.logback.classic.encoder.PatternLayoutEncoder;
+import ch.qos.logback.classic.filter.LevelFilter;
+import ch.qos.logback.core.rolling.RollingFileAppender
 
-import net.pyxzl.orayen.Config.Setting
-import ch.qos.logback.classic.filter.LevelFilter
 import static ch.qos.logback.classic.Level.ALL
 import static ch.qos.logback.classic.Level.DEBUG
 import static ch.qos.logback.classic.Level.INFO
@@ -12,14 +14,9 @@ import static ch.qos.logback.core.spi.FilterReply.ACCEPT
 import static ch.qos.logback.core.spi.FilterReply.DENY
 
 def mainPackage = 'net.pyxzl.orayen'
-def project = 'orayen'
-def logpath = System.properties.'logging.dir' ?: Setting.ENV.value.equals("dev") ? 'target/logs/' : 'logs/'
+def project = 'client'
+def logpath = System.properties.'logging.dir'
 def logpattern = "%d{MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
-if (!System.properties['os.name'].toLowerCase().contains('windows') && !Setting.ENV.value.equals("dev") && Setting.NO_COLOR.value.equals("true")) {
-	logpattern = "%d{MM-dd HH:mm:ss.SSS} %gray([%thread]) %highlight(%-5level) %cyan(%logger{24}) - %msg%n"
-}
-
-def accesspattern = "%msg%n"
 def rollingPattern = "%d{yyyy-MM-dd}"
 
 appender("STDOUT", ConsoleAppender) {
@@ -31,19 +28,6 @@ appender("FILE", RollingFileAppender) {
 	encoder(PatternLayoutEncoder) { pattern = logpattern }
 	rollingPolicy(TimeBasedRollingPolicy) {
 		fileNamePattern = logpath + project + "." + rollingPattern + ".log"
-		maxHistory = 31
-	}
-}
-
-appender("ACCESS_STDOUT", ConsoleAppender) {
-	encoder(PatternLayoutEncoder) { pattern = accesspattern }
-}
-
-appender("ACCESS_FILE", RollingFileAppender) {
-	file = logpath + project +".access.log"
-	encoder(PatternLayoutEncoder) { pattern = accesspattern }
-	rollingPolicy(TimeBasedRollingPolicy) {
-		fileNamePattern = logpath + project + ".access." + rollingPattern + ".log"
 		maxHistory = 31
 	}
 }
@@ -71,25 +55,5 @@ appender("ROOT", RollingFileAppender) {
 	}
 }
 
-logger(mainPackage, INFO, [
-	"FILE",
-	"ERROR_FILE",
-	"STDOUT"
-], false)
-logger("org.restlet", WARN, [
-	"FILE",
-	"ERROR_FILE",
-	"STDOUT"
-], false)
-logger("LogService", INFO, [
-	"ACCESS_FILE",
-	"ERROR_FILE",
-	"ACCESS_STDOUT"
-], false)
-logger("org.elasticsearch", WARN, [
-	"FILE",
-	"ERROR_FILE",
-	"STDOUT"
-], false)
-//logger("org.restlet.Component.InternalRouter.Server", TRACE, ["STDOUT"])
-root(INFO, ["ROOT", "ERROR_FILE"])
+logger(mainPackage, INFO, ["FILE", "ERROR_FILE", "STDOUT"], false)
+root(INFO, "ROOT")
