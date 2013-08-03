@@ -30,9 +30,7 @@ import org.bouncycastle.x509.extension.SubjectKeyIdentifierStructure
 @Singleton
 @SuppressWarnings("deprecation")
 class CertGenerator {
-	static char[] SERVER_PASSWORD = "OrayenServer".toCharArray()
-	static char[] CLIENT_PASSWORD = "OrayenClient".toCharArray()
-
+	static char[] SERVER_PASSWORD = Setting.CERTPASS.value as char[]
 	public static String ROOT_ALIAS = "root"
 	public static String INTERMEDIATE_ALIAS = "intermediate"
 	public static String END_ENTITY_ALIAS = "end"
@@ -103,8 +101,8 @@ class CertGenerator {
 			final Key privateKey = clientKeyStore.getKey(END_ENTITY_ALIAS, SERVER_PASSWORD)
 			final KeyStore clientStore = KeyStore.getInstance("PKCS12")
 			clientStore.load(null, null)
-			clientStore.setKeyEntry(clientName,privateKey,CLIENT_PASSWORD,clientCerts)
-			clientStore.store(new FileOutputStream(clientStoreFile), CLIENT_PASSWORD)
+			clientStore.setKeyEntry(clientName,privateKey,SERVER_PASSWORD,clientCerts)
+			clientStore.store(new FileOutputStream(clientStoreFile), SERVER_PASSWORD)
 			log.info "Created new client key file at ${Setting.CERTSTORE.value}${clientName}.p12"
 		} else {
 			log.trace "Skipped creating client key for ${clientName} as it already existed"

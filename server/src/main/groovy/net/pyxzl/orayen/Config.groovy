@@ -18,6 +18,7 @@ class Config {
 		KEYSTORE('config/keystore.jks'),			// Keystore location that holds the certificate information for the server https connector
 		TRUSTSTORE('config/truststore.jks'),		// Truststore location that holds the certificate information for clients trying to access the server
 		CERTSTORE('config/certs/'),					// Directory in which client certificates will be stored
+		CERTPASS('Orayen'),							// The password used to lock the client, key and trust store
 		ES_INDEX('orayen'),							// ElasticSearch index name
 		NO_COLOR(''),								// Disables coloured command line output when set to "true"
 

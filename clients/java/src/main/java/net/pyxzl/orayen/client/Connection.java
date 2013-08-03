@@ -1,9 +1,14 @@
 package net.pyxzl.orayen.client;
 
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.security.GeneralSecurityException;
 import java.security.KeyStore;
+import java.security.NoSuchAlgorithmException;
+import java.util.Scanner;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
@@ -14,9 +19,14 @@ import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.TrustManagerFactory;
 import javax.security.auth.x500.X500Principal;
 
-public class Connection {
-	static char[]	SERVER_PASSWORD	= "OrayenServer".toCharArray();
-	static char[]	CLIENT_PASSWORD	= "OrayenClient".toCharArray();
+/**
+ * This class is used to create an SSL context and a HTTPS connection with which the client can communicate with the server,
+ * using client certificate authentication.
+ * 
+ * @author Ravi Gairola (mallox@pyxzl.net)
+ */
+class Connection {
+	private final OrayenClient	config;
 
 	private static class Validator implements HostnameVerifier {
 		@Override
@@ -30,46 +40,56 @@ public class Connection {
 		}
 	}
 
+	Connection(final OrayenClient orayenClient) {
+		this.config = orayenClient;
+	}
+
 	/**
 	 * Connect to a server and ask for sample data.
 	 * 
+	 * @throws IOException
+	 * @throws GeneralSecurityException
 	 * @throws Exception
 	 */
-	public void connect() throws Exception {
+	String connect(final String uri) throws GeneralSecurityException, IOException {
 		final SSLContext sslContext = createSSLContext();
 		final SSLSocketFactory fact = sslContext.getSocketFactory();
-
-		final URL url = new URL("https://localhost:7443/config/1");
-		HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
+		final URL url = new URL("https://" + this.config.getHost() + ":" + this.config.getPort() + uri);
+		final HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
 		connection.setSSLSocketFactory(fact);
 		connection.setHostnameVerifier(new Validator());
 		connection.connect();
 
-		// read the response
 		final InputStream in = connection.getInputStream();
-		int ch = 0;
-		while ((ch = in.read()) >= 0) {
-			System.out.print((char) ch);
-		}
+		Scanner s = new Scanner(in, "UTF-8");
+		s.useDelimiter("\\A");
+		final String response = s.hasNext() ? s.next() : null;
+		s.close();
+		connection.disconnect();
+		return response;
 	}
 
 	/**
 	 * Create an SSL context with both identity and trust store.
+	 * 
+	 * @throws NoSuchAlgorithmException
+	 * @throws GeneralSecurityException
+	 * @throws IOException
+	 * @throws FileNotFoundException
 	 */
-	SSLContext createSSLContext() throws Exception {
+	private SSLContext createSSLContext() throws GeneralSecurityException, IOException {
 		final KeyManagerFactory mgrFact = KeyManagerFactory.getInstance("SunX509");
 		final KeyStore clientStore = KeyStore.getInstance("PKCS12");
-		clientStore.load(new FileInputStream("OrayenClient.p12"), CLIENT_PASSWORD);
-		mgrFact.init(clientStore, CLIENT_PASSWORD);
+		clientStore.load(new FileInputStream(this.config.getClientStore()), this.config.getPassword());
+		mgrFact.init(clientStore, this.config.getPassword());
 
 		final TrustManagerFactory trustFact = TrustManagerFactory.getInstance("SunX509");
 		final KeyStore trustStore = KeyStore.getInstance("JKS");
-		trustStore.load(new FileInputStream("trustStore.jks"), SERVER_PASSWORD);
+		trustStore.load(new FileInputStream(this.config.getTrustStore()), this.config.getPassword());
 		trustFact.init(trustStore);
 
 		final SSLContext sslContext = SSLContext.getInstance("TLS");
 		sslContext.init(mgrFact.getKeyManagers(), trustFact.getTrustManagers(), null);
-
 		return sslContext;
 	}
 }

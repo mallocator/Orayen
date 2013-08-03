@@ -41,9 +41,11 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.build.timestamp.format>yyyy-MM-dd HH:mm</maven.build.timestamp.format>
 		<java.version>1.7</java.version>
+		
+		<version.slf4j>1.7.5</version.slf4j>
 
 		<version.logback>1.0.11</version.logback>
-		<version.groovy>2.1.2</version.groovy>
+		<version.groovy>2.1.5</version.groovy>
 		<version.testng>6.8.1</version.testng>
 		<version.jmockit>1.1</version.jmockit>
 
@@ -55,16 +57,31 @@
 	</properties>
 
 	<dependencies>
+		<!-- Log adapter -->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>${version.slf4j}</version>
+		</dependency>
+		
 		<!-- Required for logging -->
 		<dependency>
 			<groupId>ch.qos.logback</groupId>
 			<artifactId>logback-classic</artifactId>
 			<version>${version.logback}</version>
+			<scope>test</scope>
+			<exclusions>
+				<exclusion>
+					<artifactId>slf4j-api</artifactId>
+					<groupId>org.slf4j</groupId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>org.codehaus.groovy</groupId>
 			<artifactId>groovy-all</artifactId>
 			<version>${version.groovy}</version>
+			<scope>test</scope>
 		</dependency>
 		<!-- Required for mocking during tests -->
 		<dependency>

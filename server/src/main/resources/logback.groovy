@@ -91,5 +91,4 @@ logger("org.elasticsearch", WARN, [
 	"ERROR_FILE",
 	"STDOUT"
 ], false)
-//logger("org.restlet.Component.InternalRouter.Server", TRACE, ["STDOUT"])
 root(INFO, ["ROOT", "ERROR_FILE"])

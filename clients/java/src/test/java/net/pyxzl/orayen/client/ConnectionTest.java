@@ -6,6 +6,6 @@ public class ConnectionTest {
 
 	@Test
 	public void testConnect() throws Exception {
-		new Connection().connect();
+
 	}
 }
