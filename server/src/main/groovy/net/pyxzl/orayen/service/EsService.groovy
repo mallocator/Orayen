@@ -70,6 +70,7 @@ class EsService {
 		this.createMapping("client")
 		this.createMapping("config")
 		this.createMapping("user")
+		this.createMapping("ssl")
 	}
 
 	private createMapping(String type) {

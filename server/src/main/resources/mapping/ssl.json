@@ -1,0 +1,18 @@
+{
+	ssl:{
+		_timestamp:{ enabled:true },
+		properties: {
+			alias : {
+				type : "string",
+                store : "yes",
+                index : "analyzed"
+            },
+			cert: {
+                type : "binary"
+            },
+			key: {
+                type : "binary"
+            }
+		}
+	}
+}

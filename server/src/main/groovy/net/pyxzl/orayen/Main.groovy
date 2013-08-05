@@ -9,7 +9,6 @@ import net.pyxzl.orayen.restcomponents.LocalhostFilter
 import net.pyxzl.orayen.restcomponents.RegisterResource
 import net.pyxzl.orayen.restcomponents.UserResource
 import net.pyxzl.orayen.service.CertGenerator
-import net.pyxzl.orayen.service.EsService
 
 import org.restlet.Application
 import org.restlet.Component
@@ -31,8 +30,7 @@ class Main extends Application {
 	static main(args) {
 		System.props.setProperty("org.restlet.engine.loggerFacadeClass","org.restlet.ext.slf4j.Slf4jLoggerFacade")
 		Config.instance
-		EsService.instance
-		CertGenerator.instance.createKeyStores()
+		CertGenerator.instance
 		new Main()
 	}
 
@@ -110,11 +108,11 @@ class Main extends Application {
 			parameters.add("sslContextFactory", "org.restlet.ext.ssl.PkixSslContextFactory")
 			parameters.add("keystorePath", Setting.KEYSTORE.value)
 			parameters.add("keystoreType", "JKS")
-			parameters.add("keystorePassword", "OrayenServer")
-			parameters.add("keyPassword", "OrayenServer")
+			parameters.add("keystorePassword", Setting.CERTPASS.value)
+			parameters.add("keyPassword", Setting.CERTPASS.value)
 			parameters.add("truststorePath", Setting.TRUSTSTORE.value)
 			parameters.add("truststoreType", "JKS")
-			parameters.add("truststorePassword", "OrayenServer")
+			parameters.add("truststorePassword", Setting.CERTPASS.value)
 			parameters.add("disableCrl", "true")
 			if (type.equals("REST") && false) {
 				parameters.add("needClientAuthentication", "true")
