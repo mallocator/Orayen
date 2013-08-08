@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 /**
  * The Orayen client, that bundles communicating with the Orayen configuration server.
  * 
+ * @TODO Add methods for adding local properties (e.g. IP, hostname, etc.)
  * @TODO Document example on how to use client.
  * @author Ravi Gairola (mallox@pyxzl.net)
  */

@@ -9,6 +9,7 @@
 	<url>https://github.com/mallocator/Orayen</url>
 	<inceptionYear>2013</inceptionYear>
 	<version>0.0.1-SNAPSHOT</version>
+	<!-- TODO Set up parent pom, so that at least groovy and java version are in the same update cycle -->
 
 	<licenses>
 		<license>

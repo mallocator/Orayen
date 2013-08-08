@@ -47,6 +47,7 @@ class EsService {
 
 	private Builder getSettings() {
 		try {
+			// TODO this needs to be something different as this config is already used as a general configuration for overall service
 			return ImmutableSettings.settingsBuilder().loadFromSource(new File(Setting.CONFIG.value).text)
 		} catch (IOException e) {
 			log.info "Couldn't find elasticsearch config in conf directory -> using config 'elasticsearch-${Setting.ENV.value}.json' from classpath"

@@ -27,6 +27,7 @@ class CertGenerator {
 		final File keyStoreFile = new File(Setting.KEYSTORE.value)
 
 		if (trustStoreFile.exists() && keyStoreFile.exists()) {
+			// TODO check if keys exists in database and store them there if not.
 			log.trace 'Skipping creating key and trust store, as both already exist'
 			return
 		}
