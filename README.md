@@ -109,4 +109,14 @@ Additionally the certificates are being stored within elasticsearch so that a cl
 ### ElasticSearch Configuration
 
 The server uses elasticsearch for storing data and as a clustering infrastructure. If you want to customize the elasticsearch configuration beyond the index that is used, you can do so by specifying an external configuration file.
-Other then that, the default elasticsearch configuration actually depends on the environment that the server was set up with.  
+Other then that, the default elasticsearch configuration actually depends on the environment that the server was set up with.
+
+## Roadmap
+
+T.B.D.  
+(let's build something working first, and then promise things)
+
+## Changelog
+
+### v0.0.1
+T.B.D.
