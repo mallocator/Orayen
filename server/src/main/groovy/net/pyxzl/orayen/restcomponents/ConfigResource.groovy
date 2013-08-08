@@ -10,15 +10,18 @@ import org.restlet.resource.Put
 import org.restlet.resource.ResourceException
 import org.restlet.resource.ServerResource
 
+/**
+ * @author Ravi Gairola (mallox@pyxzl.net)
+ */
 @Slf4j
-public class ConfigResource extends ServerResource {
+class ConfigResource extends ServerResource {
 	private ConfigDTO	config
 
 	@Override
 	protected void doInit() throws ResourceException {
-		final String id = (String) getRequest().getAttributes().get("clientid")
-		final String version = (String) getRequest().getAttributes().get("version")
-		this.config = new ConfigDTO(id, DateTime.now(), "{\"config\":\"example\"}")
+		final String id = (String) request.attributes.get('clientid')
+		final String version = (String) request.attributes.get('version')
+		this.config = new ConfigDTO(id, DateTime.now(), '{"config":"example"}')
 	}
 
 	/**
@@ -27,7 +30,7 @@ public class ConfigResource extends ServerResource {
 	 */
 	@Get
 	ConfigDTO getConfig() {
-		return this.config
+		this.config
 	}
 
 	@Put

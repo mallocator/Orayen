@@ -1,7 +1,6 @@
 package net.pyxzl.orayen.service
 
 import groovy.util.logging.Slf4j
-import net.pyxzl.orayen.Config
 import net.pyxzl.orayen.Config.Setting
 
 import org.elasticsearch.ElasticSearchException
@@ -17,10 +16,13 @@ import org.elasticsearch.node.Node
 import org.elasticsearch.node.NodeBuilder
 
 
+/**
+ * @author Ravi Gairola (mallox@pyxzl.net)
+ */
 @Slf4j
 @Singleton
 class EsService {
-	static final String	configLocation	= "conf/elasticsearch.json"
+	static final String	configLocation	= 'conf/elasticsearch.json'
 	GClient				client
 	Node				node
 
@@ -30,17 +32,17 @@ class EsService {
 	}
 
 	EsService start() {
-		log.info "Starting ElasticSearch Database"
+		log.info 'Starting ElasticSearch Database'
 		if (node == null) {
-			node = NodeBuilder.nodeBuilder().settings(this.getSettings()).node()
+			node = NodeBuilder.nodeBuilder().settings(this.settings).node()
 		}
 		if (client == null) {
 			client = new GClient(node.client())
 		}
 		this.checkMapping()
 		client.admin.cluster.prepareHealth(Setting.ES_INDEX.value).setWaitForYellowStatus().execute().actionGet()
-		log.info "ElasticSearch Database has been started"
-		return this
+		log.info 'ElasticSearch Database has been started'
+		this
 	}
 
 	private Builder getSettings() {
@@ -53,7 +55,7 @@ class EsService {
 	}
 
 	EsService stop() {
-		log.info "Stopping ElasticSearch Database"
+		log.info 'Stopping ElasticSearch Database'
 		if (node != null) {
 			node.close()
 			node = null
@@ -62,15 +64,15 @@ class EsService {
 			client.close()
 			client = null
 		}
-		log.info "ElasticSearch Database has been stopped"
-		return this
+		log.info 'ElasticSearch Database has been stopped'
+		this
 	}
 
 	private checkMapping() {
-		this.createMapping("client")
-		this.createMapping("config")
-		this.createMapping("user")
-		this.createMapping("ssl")
+		this.createMapping('client')
+		this.createMapping('config')
+		this.createMapping('user')
+		this.createMapping('ssl')
 	}
 
 	private createMapping(String type) {
@@ -92,7 +94,12 @@ class EsService {
 		}
 
 		try {
-			this.client.admin.indices.preparePutMapping(Setting.ES_INDEX.value).setType(type).setSource(mapping).setIgnoreConflicts(true).execute().actionGet()
+			this.client.admin.indices
+					.preparePutMapping(Setting.ES_INDEX.value)
+					.setType(type)
+					.setSource(mapping)
+					.setIgnoreConflicts(true)
+					.execute().actionGet()
 		} catch (ElasticSearchException e) {
 			log.debug "Mapping already exists for index ${Setting.ES_INDEX} and type ${type}"
 		}

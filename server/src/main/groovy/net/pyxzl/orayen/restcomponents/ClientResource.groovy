@@ -1,11 +1,14 @@
-package net.pyxzl.orayen.restcomponents;
+package net.pyxzl.orayen.restcomponents
 
-import org.restlet.resource.ResourceException;
-import org.restlet.resource.ServerResource;
+import org.restlet.resource.ResourceException
+import org.restlet.resource.ServerResource
 
-public class ClientResource extends ServerResource {
+/**
+ * @author Ravi Gairola (mallox@pyxzl.net)
+ */
+class ClientResource extends ServerResource {
 	@Override
 	protected void doInit() throws ResourceException {
-		super.doInit();
+		super.doInit()
 	}
 }

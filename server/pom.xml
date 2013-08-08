@@ -57,8 +57,7 @@
 
 		<version.maven.compiler>3.1</version.maven.compiler>
 		<version.maven.surefire>2.14.1</version.maven.surefire>
-		<version.findbugs>2.5.2</version.findbugs>
-		<version.checkstyle>2.10</version.checkstyle>
+		<version.codenarc>0.18-1</version.codenarc>
 		<version.maven.jar>2.4</version.maven.jar>
 		<version.maven.dependency>2.8</version.maven.dependency>
 		<version.maven.resources>2.6</version.maven.resources>
@@ -188,39 +187,21 @@
 			</plugin>
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>findbugs-maven-plugin</artifactId>
-				<version>${version.findbugs}</version>
-				<configuration>
-					<excludeFilterFile>${basedir}/src/site/findbugs_exclude.xml</excludeFilterFile>
-					<failOnError>false</failOnError>
-					<findbugsXmlOutput>true</findbugsXmlOutput>
-					<findbugsXmlWithMessages>true</findbugsXmlWithMessages>
-					<xmlOutput>true</xmlOutput>
-				</configuration>
+				<artifactId>codenarc-maven-plugin</artifactId>
+				<version>${version.codenarc}</version>
 				<executions>
 					<execution>
-						<phase>install</phase>
+						<phase>package</phase>
 						<goals>
-							<goal>findbugs</goal>
+							<goal>codenarc</goal>
 						</goals>
 					</execution>
 				</executions>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-checkstyle-plugin</artifactId>
-				<version>${version.checkstyle}</version>
 				<configuration>
-					<configLocation>${basedir}/src/site/checkstyle_include.xml</configLocation>
+					<groovyVersion>${version.groovy}</groovyVersion>
+					<sourceDirectory>src/main/groovy</sourceDirectory>
+					<rulesetfiles>rulesets/basic.xml,rulesets/braces.xml,rulesets/concurrency.xml,rulesets/convention.xml,rulesets/design.xml,rulesets/dry.xml,rulesets/exceptions.xml,rulesets/generic.xml,rulesets/groovyism.xml,rulesets/imports.xml,rulesets/logging.xml,rulesets/security.xml,rulesets/serialization.xml,rulesets/unnecessary.xml,rulesets/unused.xml</rulesetfiles>
 				</configuration>
-				<executions>
-					<execution>
-						<phase>install</phase>
-						<goals>
-							<goal>checkstyle</goal>
-						</goals>
-					</execution>
-				</executions>
 			</plugin>
 			<!-- Used to create the main jar in the package directory -->
 			<plugin>

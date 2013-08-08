@@ -23,14 +23,17 @@ import org.bouncycastle.x509.extension.AuthorityKeyIdentifierStructure
 import org.bouncycastle.x509.extension.SubjectKeyIdentifierStructure
 import org.elasticsearch.groovy.client.GClient
 
-@SuppressWarnings("deprecation")
+/**
+ * @author Ravi Gairola (mallox@pyxzl.net)
+ */
+@SuppressWarnings('deprecation')
 @Slf4j
 @Singleton
 class KeyService {
-	static final String ROOT_ALIAS = "root"
-	static final String INTERMEDIATE_ALIAS = "intermediate"
-	static final String END_ENTITY_ALIAS = "end"
-	private static final String ES_TYPE = "ssl"
+	static final String ROOT_ALIAS = 'root'
+	static final String INTERMEDIATE_ALIAS = 'intermediate'
+	static final String END_ENTITY_ALIAS = 'end'
+	private static final String ES_TYPE = 'ssl'
 	private static final int VALIDITY_PERIOD = 10 * 365 * 24 * 60 * 60 * 1000 // ten years
 	private final X500PrivateCredential rootCredential
 	private final X500PrivateCredential interCredential
@@ -42,19 +45,19 @@ class KeyService {
 		def root = client.get {
 			index Setting.ES_INDEX.value
 			type ES_TYPE
-			id "root"
+			id ROOT_ALIAS
 		}
 
 		def inter = client.get {
 			index Setting.ES_INDEX.value
 			type ES_TYPE
-			id "inter"
+			id INTERMEDIATE_ALIAS
 		}
 
 		def end = client.get {
 			index Setting.ES_INDEX.value
 			type ES_TYPE
-			id "end"
+			id END_ENTITY_ALIAS
 		}
 
 		if (root.response.exists && inter.response.exists && end.response.exists) {
@@ -64,13 +67,13 @@ class KeyService {
 			return
 		}
 
-		this.rootCredential = storeCred("root", createRootCredential())
-		this.interCredential = storeCred("inter", createIntermediateCredential(rootCredential.getPrivateKey(), rootCredential.getCertificate()))
-		this.endCredential = storeCred("end", createEndEntityCredential(interCredential.getPrivateKey(), interCredential.getCertificate()))
+		this.rootCredential = storeCred(ROOT_ALIAS, createRootCredential())
+		this.interCredential = storeCred(INTERMEDIATE_ALIAS, createIntermediateCredential(rootCredential.privateKey, rootCredential.certificate))
+		this.endCredential = storeCred(END_ENTITY_ALIAS, createEndEntityCredential(interCredential.privateKey, interCredential.certificate))
 	}
 
 	private X500PrivateCredential deserializeCred(def source) {
-		return new X500PrivateCredential(bytea2obj(source.cert), bytea2obj(source.key), source.alias)
+		new X500PrivateCredential(bytea2obj(source.cert), bytea2obj(source.key), source.alias)
 	}
 
 	private X500PrivateCredential storeCred(String credId, X500PrivateCredential cred) {
@@ -84,7 +87,7 @@ class KeyService {
 				key = obj2bytea(cred.key)
 			}
 		}
-		return cred
+		cred
 	}
 
 	private byte[] obj2bytea(Object o) {
@@ -115,74 +118,74 @@ class KeyService {
 	private static X500PrivateCredential createRootCredential() {
 		final KeyPair rootPair = generateRSAKeyPair()
 		final X509Certificate rootCert = generateRootCert(rootPair)
-		return new X500PrivateCredential(rootCert, rootPair.getPrivate(), ROOT_ALIAS)
+		new X500PrivateCredential(rootCert, rootPair.private, ROOT_ALIAS)
 	}
 
 	private static X500PrivateCredential createIntermediateCredential(PrivateKey caKey, X509Certificate caCert) {
 		final KeyPair interPair = generateRSAKeyPair()
-		final X509Certificate interCert = generateIntermediateCert(interPair.getPublic(), caKey, caCert)
-		return new X500PrivateCredential(interCert, interPair.getPrivate(), INTERMEDIATE_ALIAS)
+		final X509Certificate interCert = generateIntermediateCert(interPair.public, caKey, caCert)
+		new X500PrivateCredential(interCert, interPair.private, INTERMEDIATE_ALIAS)
 	}
 
 	private static X500PrivateCredential createEndEntityCredential(PrivateKey caKey, X509Certificate caCert) {
 		final KeyPair endPair = generateRSAKeyPair()
-		final X509Certificate endCert = generateEndEntityCert(endPair.getPublic(), caKey, caCert)
-		return new X500PrivateCredential(endCert, endPair.getPrivate(), END_ENTITY_ALIAS)
+		final X509Certificate endCert = generateEndEntityCert(endPair.public, caKey, caCert)
+		new X500PrivateCredential(endCert, endPair.private, END_ENTITY_ALIAS)
 	}
 
 	private static X509Certificate generateRootCert(KeyPair pair) {
 		final X509V1CertificateGenerator  certGen = new X509V1CertificateGenerator()
 		certGen.serialNumber = BigInteger.valueOf(1)
-		certGen.setIssuerDN(new X500Principal("CN=Orayen CA Certificate"))
+		certGen.setIssuerDN(new X500Principal('CN=Orayen CA Certificate'))
 		certGen.notBefore = new Date(System.currentTimeMillis())
 		certGen.notAfter = new Date(System.currentTimeMillis() + VALIDITY_PERIOD)
-		certGen.setSubjectDN(new X500Principal("CN=Orayen CA Certificate"))
-		certGen.publicKey = pair.getPublic()
-		certGen.signatureAlgorithm = "SHA1WithRSAEncryption"
-		return certGen.generateX509Certificate(pair.getPrivate())
+		certGen.setSubjectDN(new X500Principal('CN=Orayen CA Certificate'))
+		certGen.publicKey = pair.public
+		certGen.signatureAlgorithm = 'SHA1WithRSAEncryption'
+		certGen.generateX509Certificate(pair.private)
 	}
 
-	public static X509Certificate generateIntermediateCert(PublicKey intKey, PrivateKey caKey, X509Certificate caCert) {
+	static X509Certificate generateIntermediateCert(PublicKey intKey, PrivateKey caKey, X509Certificate caCert) {
 		final X509V3CertificateGenerator  certGen = new X509V3CertificateGenerator()
 
 		certGen.serialNumber = BigInteger.valueOf(1)
-		certGen.setIssuerDN(caCert.getSubjectX500Principal())
+		certGen.setIssuerDN(caCert.subjectX500Principal)
 		certGen.notBefore = new Date(System.currentTimeMillis())
 		certGen.notAfter = new Date(System.currentTimeMillis() + VALIDITY_PERIOD)
-		certGen.setSubjectDN(new X500Principal("CN=Orayen Intermediate Certificate"))
+		certGen.setSubjectDN(new X500Principal('CN=Orayen Intermediate Certificate'))
 		certGen.publicKey = intKey
-		certGen.signatureAlgorithm = "SHA1WithRSAEncryption"
+		certGen.signatureAlgorithm = 'SHA1WithRSAEncryption'
 
 		certGen.addExtension(X509Extensions.AuthorityKeyIdentifier, false, new AuthorityKeyIdentifierStructure(caCert))
 		certGen.addExtension(X509Extensions.SubjectKeyIdentifier, false, new SubjectKeyIdentifierStructure(intKey))
 		certGen.addExtension(X509Extensions.BasicConstraints, true, new BasicConstraints(0))
 		certGen.addExtension(X509Extensions.KeyUsage, true, new KeyUsage(KeyUsage.digitalSignature | KeyUsage.keyCertSign | KeyUsage.cRLSign))
 
-		return certGen.generateX509Certificate(caKey)
+		certGen.generateX509Certificate(caKey)
 	}
 
 	private static X509Certificate generateEndEntityCert(PublicKey entityKey, PrivateKey caKey, X509Certificate caCert) {
 		final X509V3CertificateGenerator  certGen = new X509V3CertificateGenerator()
 
 		certGen.serialNumber = BigInteger.valueOf(1)
-		certGen.setIssuerDN(caCert.getSubjectX500Principal())
+		certGen.setIssuerDN(caCert.subjectX500Principal)
 		certGen.notBefore = new Date(System.currentTimeMillis())
 		certGen.notAfter = new Date(System.currentTimeMillis() + VALIDITY_PERIOD)
-		certGen.setSubjectDN(new X500Principal("CN=Orayen End Certificate"))
+		certGen.setSubjectDN(new X500Principal('CN=Orayen End Certificate'))
 		certGen.publicKey = entityKey
-		certGen.signatureAlgorithm = "SHA1WithRSAEncryption"
+		certGen.signatureAlgorithm = 'SHA1WithRSAEncryption'
 
 		certGen.addExtension(X509Extensions.AuthorityKeyIdentifier, false, new AuthorityKeyIdentifierStructure(caCert))
 		certGen.addExtension(X509Extensions.SubjectKeyIdentifier, false, new SubjectKeyIdentifierStructure(entityKey))
 		certGen.addExtension(X509Extensions.BasicConstraints, true, new BasicConstraints(false))
 		certGen.addExtension(X509Extensions.KeyUsage, true, new KeyUsage(KeyUsage.digitalSignature | KeyUsage.keyEncipherment))
 
-		return certGen.generateX509Certificate(caKey)
+		certGen.generateX509Certificate(caKey)
 	}
 
-	public static KeyPair generateRSAKeyPair() {
-		final KeyPairGenerator  kpGen = KeyPairGenerator.getInstance("RSA")
-		kpGen.initialize(1024,new SecureRandom())
-		return kpGen.generateKeyPair()
+	static KeyPair generateRSAKeyPair() {
+		final KeyPairGenerator  kpGen = KeyPairGenerator.getInstance('RSA')
+		kpGen.initialize(1024, new SecureRandom())
+		kpGen.generateKeyPair()
 	}
 }

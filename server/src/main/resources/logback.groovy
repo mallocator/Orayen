@@ -76,7 +76,7 @@ logger(mainPackage, INFO, [
 	"ERROR_FILE",
 	"STDOUT"
 ], false)
-logger("org.restlet", DEBUG, [
+logger("org.restlet", WARN, [
 	"FILE",
 	"ERROR_FILE",
 	"STDOUT"

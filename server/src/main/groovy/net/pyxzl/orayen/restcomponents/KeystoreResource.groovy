@@ -6,14 +6,17 @@ import org.restlet.resource.Put
 import org.restlet.resource.ResourceException
 import org.restlet.resource.ServerResource
 
-public class KeystoreResource extends ServerResource {
-	private String format = "jks"
+/**
+ * @author Ravi Gairola (mallox@pyxzl.net)
+ */
+class KeystoreResource extends ServerResource {
+	private String format = 'jks'
 	private String clientId
 
 	@Override
 	protected void doInit() throws ResourceException {
-		this.format = (String) getRequest().getAttributes().get("format")
-		this.clientId = (String) getRequest().getAttributes().get("clientid")
+		this.format = (String) request.attributes.get('format')
+		this.clientId = (String) request.attributes.get('clientid')
 	}
 
 	/**
@@ -22,7 +25,7 @@ public class KeystoreResource extends ServerResource {
 	 */
 	@Get
 	String getCertificate() {
-		return null
+		null
 	}
 
 
@@ -32,11 +35,11 @@ public class KeystoreResource extends ServerResource {
 	 */
 	@Post
 	String getClientCertificate() {
-		return null
+		null
 	}
 
 	@Put
 	boolean createKeystore() {
-		return true
+		true
 	}
 }
