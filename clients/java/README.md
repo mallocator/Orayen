@@ -1,3 +1,3 @@
 # Orayen Java Client
 
-Sorry, but this has not been implemented yet.
+Sorry, but there is no descriptopn available yet.

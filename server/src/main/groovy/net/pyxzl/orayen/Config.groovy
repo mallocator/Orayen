@@ -12,6 +12,8 @@ import groovy.util.logging.Slf4j
 class Config {
 	/**
 	 * @author Ravi Gairola (mallox@pyxzl.net)
+	 *
+	 * @TODO change ENV from local to embedded
 	 */
 	static enum Setting {
 		CONFIG('config/orayen.json'),				// Location of the configuration file, that will override all default and command line options

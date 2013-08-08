@@ -40,6 +40,11 @@ The configuration will also allow to use local variable as configuration place h
 (yes this just got Meta)
 
 ### Options
+
+TODO write proper description for each config
+TODO explain where you can set the options
+TODO explain priority of config sources
+
 _config (Default = config/orayen.json)_  
 Location of the configuration file, that will override all default and command line options
 
@@ -76,10 +81,10 @@ Directory in which client certificates will be stored
 _certpass (Default = Orayen)_  
 The password used to lock the client, key and trust store
 
-_es\_index (Default = orayen)_
+_es\_index (Default = orayen)_  
 ElasticSearch index name
 
-_no\_color (Default = false)_
+_no\_color (Default = false)_  
 Disables coloured command line output when set to "true"
 
 ### Web Interface Access
@@ -98,18 +103,26 @@ Clients connecting from other hosts need to authenticate via client certificate 
 The server currently only supports a polling architecture, but future updates will include the ability to push updates to clients as well, if their environment allows it.
 Clients in general have to register with the configuration server to receive updates, as it is dependent on their attributes, what client groups they will join and what updates they will receive.
 
+TODO outline protocol
+
 ### Trust and Key Store Configuration
 
 The server will generate a truststore and a keystore when it start automatically. From this information a client keystore will be generated that can be distributed with your clients to communicate with the server.
 
-The certificates in these store are of course self signed and will not be verified by third parties. If you want to supply your own certificate chains, then you need to make sure the truststore and keystore are at the configured locations.
+The certificates in these stores are of course self signed and will not be verified by third parties. If you want to supply your own certificate chains, then you need to make sure the truststore and keystore are at the configured locations.
 Additionally the certificates are being stored within elasticsearch so that a clustered setup will share the same certificate. So if you replace the existing trust and key store, you will also need to delete the certificates stored in elasticsearch.
 (In future updates this will be simplified through a command line option)
+
+TODO show how to set up a client with the right certificate
+TODO show how to create a keystore with your own certificate
 
 ### ElasticSearch Configuration
 
 The server uses elasticsearch for storing data and as a clustering infrastructure. If you want to customize the elasticsearch configuration beyond the index that is used, you can do so by specifying an external configuration file.
 Other then that, the default elasticsearch configuration actually depends on the environment that the server was set up with.
+
+TODO Link to Elasticsearch
+TODO examples for a custom config
 
 ## Roadmap
 
