@@ -10,7 +10,6 @@ import net.pyxzl.orayen.restcomponents.RegisterResource
 import net.pyxzl.orayen.restcomponents.UserResource
 import net.pyxzl.orayen.service.CertGenerator
 
-import org.restlet.Application
 import org.restlet.Component
 import org.restlet.Restlet
 import org.restlet.Server
@@ -26,7 +25,7 @@ import org.restlet.util.Series
  *
  */
 @Slf4j
-class Main extends Application {
+class Main{
 	static main(args) {
 		System.props.setProperty("org.restlet.engine.loggerFacadeClass","org.restlet.ext.slf4j.Slf4jLoggerFacade")
 		Config.instance
@@ -35,11 +34,10 @@ class Main extends Application {
 	}
 
 	Main() {
-		setRestEndpoints()
-		setWebEndpoints()
+		setWebEndpoints(setRestEndpoints())
 	}
 
-	private setRestEndpoints() {
+	private Router setRestEndpoints() {
 		final Router router = new Router()
 		router.setName("REST Router")
 
@@ -57,30 +55,38 @@ class Main extends Application {
 		router.attach("/user/{userid}", UserResource.class)
 
 		this.createComponent(router, Setting.LOCAL_PORT, Setting.PORT, "REST")
+		return router
 	}
 
-	private setWebEndpoints() {
-		final Component component = new Component()
-		final Directory dir = new Directory(getContext(), Setting.ADMIN_ROOT.value)
-		dir.setName("Web Router")
-		dir.setListingAllowed(Setting.ENV.value.equals("dev"))
+	private setWebEndpoints(final Router router) {
+		final Directory dir = new Directory(null, Setting.ADMIN_ROOT.value)
+		dir.name = "Web Router"
+		dir.listingAllowed = Setting.ENV.value.equals("dev")
 
-		this.createComponent(dir, Setting.LOCAL_ADMIN_PORT, Setting.ADMIN_PORT, "Web")
+		final Router proxy = new Router()
+		proxy.setName("API Proxy")
+		proxy.attach("/api", router)
+		proxy.attach("/", dir)
+
+		final Component component = this.createComponent(proxy, Setting.LOCAL_ADMIN_PORT, Setting.ADMIN_PORT, "Web")
+
+		dir.context = component.context.createChildContext()
 	}
 
-	private createComponent(Restlet restlet, Setting localPort, Setting globalPort, String type) {
+	private Component createComponent(Restlet restlet, Setting localPort, Setting globalPort, String type) {
+		final Component webComponent
 		if (Setting.LOCAL_PORT.value as int) {
-			final Component component = new Component()
+			webComponent = new Component()
 			if (type.equals("Web")) {
-				component.getClients().add(Protocol.FILE)
+				webComponent.clients.add(Protocol.FILE)
 			}
-			component.getServers().add(Protocol.HTTP, localPort.value as int)
+			webComponent.servers.add(Protocol.HTTP, localPort.value as int)
 			final Filter filter = new LocalhostFilter()
-			filter.setContext(component.getContext().createChildContext())
-			filter.setNext(restlet)
-			component.getDefaultHost().attach("", filter)
+			filter.context = webComponent.getContext().createChildContext()
+			filter.next = restlet
+			webComponent.defaultHost.attach("", filter)
 			try {
-				component.start()
+				webComponent.start()
 			} catch (BindException e) {
 				log.error "Unable to bind port ${localPort} for the local ${type} interface, it's in use by another process"
 				log.debug("", e)
@@ -102,9 +108,9 @@ class Main extends Application {
 			}
 
 			final Component component = new Component()
-			component.getClients().add(Protocol.FILE)
-			final Server server = component.getServers().add(Protocol.HTTPS, globalPort.value as int)
-			final Series<Parameter> parameters = server.getContext().getParameters()
+			component.clients.add(Protocol.FILE)
+			final Server server = component.servers.add(Protocol.HTTPS, globalPort.value as int)
+			final Series<Parameter> parameters = server.context.parameters
 			parameters.add("sslContextFactory", "org.restlet.ext.ssl.PkixSslContextFactory")
 			parameters.add("keystorePath", Setting.KEYSTORE.value)
 			parameters.add("keystoreType", "JKS")
@@ -117,7 +123,7 @@ class Main extends Application {
 			if (type.equals("REST") && false) {
 				parameters.add("needClientAuthentication", "true")
 			}
-			component.getDefaultHost().attach("", restlet)
+			component.defaultHost.attach("", restlet)
 			try {
 				component.start()
 			} catch (BindException e) {
@@ -130,5 +136,6 @@ class Main extends Application {
 		} else {
 			log.info "${type} endpoint has been disabled (${globalPort})"
 		}
+		return webComponent
 	}
 }
