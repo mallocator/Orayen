@@ -84,6 +84,9 @@ The password used to lock the client, key and trust store
 _es\_index (Default = orayen)_  
 ElasticSearch index name
 
+_ES\_CONFIG (Default = built in config)_  
+ElasticSearch configuration file
+
 _no\_color (Default = false)_  
 Disables coloured command line output when set to "true"
 

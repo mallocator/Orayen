@@ -26,13 +26,13 @@ class CertGenerator {
 		final File trustStoreFile = new File(Setting.TRUSTSTORE.value)
 		final File keyStoreFile = new File(Setting.KEYSTORE.value)
 
+		Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider())
+
 		if (trustStoreFile.exists() && keyStoreFile.exists()) {
-			// TODO check if keys exists in database and store them there if not.
 			log.trace 'Skipping creating key and trust store, as both already exist'
+			KeyService.instance.storeKeys(keyStoreFile)
 			return
 		}
-
-		Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider())
 
 		final X500PrivateCredential rootCredential = KeyService.instance.rootCredential
 		final X500PrivateCredential interCredential = KeyService.instance.interCredential
@@ -63,7 +63,7 @@ class CertGenerator {
 		keyStore.load(null, null)
 		keyStore.setKeyEntry(KeyService.ROOT_ALIAS, rootCredential.privateKey, SERVER_PASSWORD, serverChain)
 		keyStore.setKeyEntry(KeyService.INTERMEDIATE_ALIAS, interCredential.privateKey, SERVER_PASSWORD, interChain)
-		keyStore.setKeyEntry(KeyService.END_ENTITY_ALIAS, endCredential.privateKey, SERVER_PASSWORD,clientChain)
+		keyStore.setKeyEntry(KeyService.END_ENTITY_ALIAS, endCredential.privateKey, SERVER_PASSWORD, clientChain)
 		keyStore.store(new FileOutputStream(keyStoreFile), SERVER_PASSWORD)
 		log.info "Created new trust store at ${Setting.KEYSTORE}"
 	}

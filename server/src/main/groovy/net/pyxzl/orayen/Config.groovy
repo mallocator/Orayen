@@ -12,12 +12,10 @@ import groovy.util.logging.Slf4j
 class Config {
 	/**
 	 * @author Ravi Gairola (mallox@pyxzl.net)
-	 *
-	 * @TODO change ENV from local to embedded
 	 */
 	static enum Setting {
 		CONFIG('config/orayen.json'),				// Location of the configuration file, that will override all default and command line options
-		ENV('local'),								// Possible Environments are: dev, local and prod
+		ENV('embedded'),								// Possible Environments are: dev, local and prod
 		PORT('7443'),								// Server port on which REST calls can be made via https authentication
 		LOCAL_PORT('7000'),							// Server port on which REST calls can be made without https, but only from localhost
 		ADMIN_PORT('8443'),							// Server port on which the admin interface can be accessed via https
@@ -29,6 +27,7 @@ class Config {
 		CERTSTORE('config/certs/'),					// Directory in which client certificates will be stored
 		CERTPASS('Orayen'),							// The password used to lock the client, key and trust store
 		ES_INDEX('orayen'),							// ElasticSearch index name
+		ES_CONFIG(null),							// ElasticSearch configuration file
 		NO_COLOR(''),								// Disables coloured command line output when set to "true"
 
 		def value

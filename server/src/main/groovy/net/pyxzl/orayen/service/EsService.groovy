@@ -46,13 +46,14 @@ class EsService {
 	}
 
 	private Builder getSettings() {
-		try {
-			// TODO this needs to be something different as this config is already used as a general configuration for overall service
-			return ImmutableSettings.settingsBuilder().loadFromSource(new File(Setting.CONFIG.value).text)
-		} catch (IOException e) {
-			log.info "Couldn't find elasticsearch config in conf directory -> using config 'elasticsearch-${Setting.ENV.value}.json' from classpath"
-			return ImmutableSettings.settingsBuilder().loadFromClasspath("elasticsearch-${Setting.ENV.value}.json")
+		if (Setting.ES_CONFIG.value != null) {
+			try {
+				return ImmutableSettings.settingsBuilder().loadFromSource(new File(Setting.ES_CONFIG.value).text)
+			} catch (IOException e) {
+				log.info "Couldn't find elasticsearch config in conf directory -> using config 'elasticsearch-${Setting.ENV.value}.json' from classpath"
+			}
 		}
+		return ImmutableSettings.settingsBuilder().loadFromClasspath("elasticsearch-${Setting.ENV.value}.json")
 	}
 
 	EsService stop() {
@@ -62,7 +63,7 @@ class EsService {
 			node = null
 		}
 		if (client != null) {
-			client.close()
+			client.client.close()
 			client = null
 		}
 		log.info 'ElasticSearch Database has been stopped'
@@ -70,10 +71,14 @@ class EsService {
 	}
 
 	private checkMapping() {
-		this.createMapping('client')
-		this.createMapping('config')
-		this.createMapping('user')
-		this.createMapping('ssl')
+		[
+			'client',
+			'config',
+			'user',
+			'ssl'
+		].each { String type ->
+			this.createMapping(type)
+		}
 	}
 
 	private createMapping(String type) {

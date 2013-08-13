@@ -9,7 +9,7 @@ import org.testng.annotations.Test
 class ConfigTest {
 	@Test
 	void testConfigSetup() {
-		System.props.orayen_env = "test_env"
+		System.props['orayen_env'] = "test_env"
 		new Config()
 		assert Setting.ENV.value == "test_env"
 	}

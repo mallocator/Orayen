@@ -4,6 +4,7 @@ import groovy.util.logging.Slf4j
 
 import java.security.KeyPair
 import java.security.KeyPairGenerator
+import java.security.KeyStore
 import java.security.PrivateKey
 import java.security.PublicKey
 import java.security.SecureRandom
@@ -33,11 +34,13 @@ class KeyService {
 	static final String ROOT_ALIAS = 'root'
 	static final String INTERMEDIATE_ALIAS = 'intermediate'
 	static final String END_ENTITY_ALIAS = 'end'
+	private static final char[] SERVER_PASSWORD = Setting.CERTPASS.value as char[]
 	private static final String ES_TYPE = 'ssl'
 	private static final int VALIDITY_PERIOD = 10 * 365 * 24 * 60 * 60 * 1000 // ten years
 	private final X500PrivateCredential rootCredential
 	private final X500PrivateCredential interCredential
 	private final X500PrivateCredential endCredential
+	private final boolean keyExist = false
 
 	private KeyService() {
 		final GClient client = EsService.instance.client
@@ -61,6 +64,7 @@ class KeyService {
 		}
 
 		if (root.response.exists && inter.response.exists && end.response.exists) {
+			this.keyExist = true
 			this.rootCredential = this.deserializeCred(root.response.source)
 			this.interCredential = this.deserializeCred(inter.response.source)
 			this.endCredential = this.deserializeCred(end.response.source)
@@ -70,6 +74,30 @@ class KeyService {
 		this.rootCredential = storeCred(ROOT_ALIAS, createRootCredential())
 		this.interCredential = storeCred(INTERMEDIATE_ALIAS, createIntermediateCredential(rootCredential.privateKey, rootCredential.certificate))
 		this.endCredential = storeCred(END_ENTITY_ALIAS, createEndEntityCredential(interCredential.privateKey, interCredential.certificate))
+	}
+
+	/**
+	 * Stores the given keys in the database if they didn't exist there in the first place.
+	 * This allows a user to add his own keys from a custom trust store, when the keys have been deleted from the database.
+	 *
+	 * @param keyStoreFile The Java File where the key store file with the existing credentials can be found.
+	 */
+	void storeKeys(final File keyStoreFile) {
+		if (keyExist) {
+			return
+		}
+		final KeyStore keyStore = KeyStore.getInstance('JKS')
+		keyStore.load(new FileInputStream(keyStoreFile), SERVER_PASSWORD)
+		[
+			ROOT_ALIAS,
+			INTERMEDIATE_ALIAS,
+			END_ENTITY_ALIAS
+		].each { String keyName ->
+			final PrivateKey rootKey = keyStore.getKey(keyName, SERVER_PASSWORD)
+			final X509Certificate rootCert = keyStore.getCertificate(keyName)
+			final X500PrivateCredential credential = new X500PrivateCredential(rootCert, rootKey, keyName)
+			storeCred(keyName, credential)
+		}
 	}
 
 	private X500PrivateCredential deserializeCred(def source) {
@@ -145,7 +173,7 @@ class KeyService {
 		certGen.generateX509Certificate(pair.private)
 	}
 
-	static X509Certificate generateIntermediateCert(PublicKey intKey, PrivateKey caKey, X509Certificate caCert) {
+	private static X509Certificate generateIntermediateCert(PublicKey intKey, PrivateKey caKey, X509Certificate caCert) {
 		final X509V3CertificateGenerator  certGen = new X509V3CertificateGenerator()
 
 		certGen.serialNumber = BigInteger.valueOf(1)
@@ -183,7 +211,7 @@ class KeyService {
 		certGen.generateX509Certificate(caKey)
 	}
 
-	static KeyPair generateRSAKeyPair() {
+	private static KeyPair generateRSAKeyPair() {
 		final KeyPairGenerator  kpGen = KeyPairGenerator.getInstance('RSA')
 		kpGen.initialize(1024, new SecureRandom())
 		kpGen.generateKeyPair()
