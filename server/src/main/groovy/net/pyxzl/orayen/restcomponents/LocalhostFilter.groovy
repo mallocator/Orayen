@@ -15,6 +15,7 @@ import org.restlet.routing.Filter
  */
 @Slf4j
 class LocalhostFilter extends Filter {
+	// TODO make this configurable
 	private static final Set whitelist = new HashSet([
 		'127.0.0.0',
 		'0:0:0:0:0:0:0:1'

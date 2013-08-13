@@ -14,6 +14,7 @@ import javax.security.auth.x500.X500Principal
 import javax.security.auth.x500.X500PrivateCredential
 
 import net.pyxzl.orayen.Config.Setting
+import net.pyxzl.orayen.dao.CredentialsDAO
 
 import org.bouncycastle.asn1.x509.BasicConstraints
 import org.bouncycastle.asn1.x509.KeyUsage
@@ -22,7 +23,6 @@ import org.bouncycastle.x509.X509V1CertificateGenerator
 import org.bouncycastle.x509.X509V3CertificateGenerator
 import org.bouncycastle.x509.extension.AuthorityKeyIdentifierStructure
 import org.bouncycastle.x509.extension.SubjectKeyIdentifierStructure
-import org.elasticsearch.groovy.client.GClient
 
 /**
  * @author Ravi Gairola (mallox@pyxzl.net)
@@ -43,37 +43,21 @@ class KeyService {
 	private final boolean keyExist = false
 
 	private KeyService() {
-		final GClient client = EsService.instance.client
+		final X500PrivateCredential root = CredentialsDAO.instance.get(ROOT_ALIAS)
+		final X500PrivateCredential inter = CredentialsDAO.instance.get(ROOT_ALIAS)
+		final X500PrivateCredential end = CredentialsDAO.instance.get(ROOT_ALIAS)
 
-		def root = client.get {
-			index Setting.ES_INDEX.value
-			type ES_TYPE
-			id ROOT_ALIAS
-		}
-
-		def inter = client.get {
-			index Setting.ES_INDEX.value
-			type ES_TYPE
-			id INTERMEDIATE_ALIAS
-		}
-
-		def end = client.get {
-			index Setting.ES_INDEX.value
-			type ES_TYPE
-			id END_ENTITY_ALIAS
-		}
-
-		if (root.response.exists && inter.response.exists && end.response.exists) {
+		if (root != null && inter != null && end != null) {
 			this.keyExist = true
-			this.rootCredential = this.deserializeCred(root.response.source)
-			this.interCredential = this.deserializeCred(inter.response.source)
-			this.endCredential = this.deserializeCred(end.response.source)
+			this.rootCredential = root
+			this.interCredential = inter
+			this.endCredential = end
 			return
 		}
 
-		this.rootCredential = storeCred(ROOT_ALIAS, createRootCredential())
-		this.interCredential = storeCred(INTERMEDIATE_ALIAS, createIntermediateCredential(rootCredential.privateKey, rootCredential.certificate))
-		this.endCredential = storeCred(END_ENTITY_ALIAS, createEndEntityCredential(interCredential.privateKey, interCredential.certificate))
+		this.rootCredential = CredentialsDAO.instance.put(createRootCredential())
+		this.interCredential = CredentialsDAO.instance.put(createIntermediateCredential(rootCredential.privateKey, rootCredential.certificate))
+		this.endCredential = CredentialsDAO.instance.put(createEndEntityCredential(interCredential.privateKey, interCredential.certificate))
 	}
 
 	/**
@@ -96,50 +80,7 @@ class KeyService {
 			final PrivateKey rootKey = keyStore.getKey(keyName, SERVER_PASSWORD)
 			final X509Certificate rootCert = keyStore.getCertificate(keyName)
 			final X500PrivateCredential credential = new X500PrivateCredential(rootCert, rootKey, keyName)
-			storeCred(keyName, credential)
-		}
-	}
-
-	private X500PrivateCredential deserializeCred(def source) {
-		new X500PrivateCredential(bytea2obj(source.cert), bytea2obj(source.key), source.alias)
-	}
-
-	private X500PrivateCredential storeCred(String credId, X500PrivateCredential cred) {
-		EsService.instance.client.index {
-			index Setting.ES_INDEX.value
-			type ES_TYPE
-			id credId
-			source {
-				alias = cred.alias
-				cert = obj2bytea(cred.cert)
-				key = obj2bytea(cred.key)
-			}
-		}
-		cred
-	}
-
-	private byte[] obj2bytea(Object o) {
-		final ByteArrayOutputStream bos = new ByteArrayOutputStream()
-		ObjectOutput output = null
-		try {
-			output = new ObjectOutputStream(bos)
-			output.writeObject(o)
-			return bos.toByteArray()
-		} finally {
-			output.close()
-			bos.close()
-		}
-	}
-
-	private Object bytea2obj(byte[] ba) {
-		final ByteArrayInputStream bis = new ByteArrayInputStream(ba)
-		ObjectInput input = null
-		try {
-			input = new ObjectInputStream(bis)
-			return input.readObject()
-		} finally {
-			bis.close()
-			input.close()
+			CredentialsDAO.instance.put(credential)
 		}
 	}
 

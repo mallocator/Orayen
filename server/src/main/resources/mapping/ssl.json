@@ -1,11 +1,12 @@
 {
 	ssl:{
 		_timestamp:{ enabled:true },
+		_id : { path : "alias" },
 		properties: {
 			alias : {
 				type : "string",
                 store : "yes",
-                index : "analyzed"
+                index : "not_analyzed"
             },
 			cert: {
                 type : "binary"

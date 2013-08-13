@@ -2,7 +2,8 @@ package net.pyxzl.orayen.restcomponents
 
 import groovy.util.logging.Slf4j
 import net.pyxzl.orayen.Config.Setting
-import net.pyxzl.orayen.service.EsService
+import net.pyxzl.orayen.dao.UserDAO
+import net.pyxzl.orayen.dto.UserDTO
 
 import org.restlet.security.LocalVerifier
 
@@ -14,32 +15,19 @@ class EsVerifier extends LocalVerifier {
 	private static final String ES_TYPE = 'users'
 
 	EsVerifier() {
-		def admin = EsService.instance.client.get {
-			index Setting.ES_INDEX.value
-			type ES_TYPE
-			id 'admin'
-		}
-		if (!admin.response.exists) {
-			EsService.instance.client.index {
-				index Setting.ES_INDEX.value
-				type ES_TYPE
-				id 'admin'
-				source { password = Setting.ADMIN_PASSWORD.value }
-			}
+		def admin =  UserDAO.instance.get('admin')
+		if (admin == null) {
+			UserDAO.instance.put(new UserDTO('admin', Setting.ADMIN_PASSWORD.value))
 			log.debug 'Created admin user with configured default password'
 		}
 	}
 
 	@Override
 	char[] getLocalSecret(final String identifier) {
-		def user = EsService.instance.client.get {
-			index Setting.ES_INDEX.value
-			type ES_TYPE
-			id identifier
-		}
-		if (!user.response.exists) {
+		def user = UserDAO.instance.get(identifier)
+		if (user == null) {
 			log.info "User '${identifier}' could not be authenticated because he's not registered"
 		}
-		return user.response.source?.password
+		return user?.password
 	}
 }
