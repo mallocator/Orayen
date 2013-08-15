@@ -1,8 +1,8 @@
 package net.pyxzl.orayen.dto
 
 class UserDTO {
-	final String id
-	final String password
+	String id
+	String password
 
 	UserDTO(final String id, final String password) {
 		this.id = id

@@ -41,9 +41,35 @@ The configuration will also allow to use local variable as configuration place h
 
 ### Options
 
+There are 2 ways to set options for the server: Command line arguments and a configuration file. Any configuration that is supposed to be read from the command line has to be prefixed with "orayen_".
+Here is an example for passing a custom config location to the server:
+
+    java -jar Orayen.jar -Dorayen_config=/etc/orayen.conf
+    
+Configuration in the config file is stored in a json format. The default location is in a relative path stored at config/orayen.json.
+A sample configuration would look like this:
+
+    {
+    	"env": "prod",
+    	"port": 443,
+    	"local_port": 0,
+    	"admin_port": 0,
+    	"local_admin_port": 80
+    }
+    
+Any option that is neither set via command line, nor in a config file will fall back to its default.
+All options have default setting.
+
+A future feature will allow to change configuration options while running the service, using the admin interface. (After all that's the use case we're building this for, might as well use it)
+
+Options are read in with the following descending priority:
+
+* Runtime Configuration Changes (not yet available)
+* Command Line Flags
+* Configuration File
+* Default Settings
+
 TODO write proper description for each config
-TODO explain where you can set the options
-TODO explain priority of config sources
 
 _config (Default = config/orayen.json)_  
 Location of the configuration file, that will override all default and command line options

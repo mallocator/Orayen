@@ -6,13 +6,15 @@ import net.pyxzl.orayen.Config.Setting
 import net.pyxzl.orayen.service.EsService
 
 @Singleton
-class CredentialsDAO {
-	private static final String ES_TYPE = 'ssl'
+class CredentialsDAO extends DAO {
+	protected String getEsType() {
+		'ssl'
+	}
 
 	X500PrivateCredential get(String alias) {
 		def cred = EsService.instance.client.get {
 			index Setting.ES_INDEX.value
-			type ES_TYPE
+			type esType
 			id alias
 		}
 		if (cred.response.exists) {
@@ -24,7 +26,7 @@ class CredentialsDAO {
 	X500PrivateCredential put(X500PrivateCredential cred) {
 		EsService.instance.client.index {
 			index Setting.ES_INDEX.value
-			type ES_TYPE
+			type esType
 			id cred.alias
 			source {
 				alias = cred.alias
@@ -33,14 +35,6 @@ class CredentialsDAO {
 			}
 		}
 		cred
-	}
-
-	void delete(String alias) {
-		EsService.instance.client.delete {
-			index Setting.ES_INDEX.value
-			type ES_TYPE
-			id alias
-		}
 	}
 
 	private byte[] obj2bytea(Object o) {

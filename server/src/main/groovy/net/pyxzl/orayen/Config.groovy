@@ -49,10 +49,8 @@ class Config {
 
 	private Config() {
 		log.debug 'Reading Configuration'
-		System.props.each { String k, String v ->
-			if (k.startsWith('orayen_')) {
-				Setting.valueOf(k.substring(7).toUpperCase())?.value = v.trim()
-			}
+		if (System.props['orayen_config']!=null) {
+			Setting.CONFIG.value = System.props['orayen_config'].trim()
 		}
 		try {
 			new JsonSlurper().parseText(new File(Setting.CONFIG.value)?.text)?.each { String k, String v ->
@@ -61,6 +59,11 @@ class Config {
 		} catch (FileNotFoundException e) {
 			log.info "No configuration could be found at ${Setting.CONFIG}, falling back to defaults"
 			log.trace('',e)
+		}
+		System.props.each { String k, String v ->
+			if (k.startsWith('orayen_')) {
+				Setting.valueOf(k.substring(7).toUpperCase())?.value = v.trim()
+			}
 		}
 	}
 }

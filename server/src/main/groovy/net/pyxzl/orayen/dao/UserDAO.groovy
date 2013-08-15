@@ -5,13 +5,16 @@ import net.pyxzl.orayen.dto.UserDTO
 import net.pyxzl.orayen.service.EsService
 
 @Singleton
-class UserDAO {
-	private static final String ES_TYPE = 'users'
+class UserDAO extends DAO {
+	@Override
+	protected Object getEsType() {
+		'users'
+	}
 
 	UserDTO get(String name) {
 		def user = EsService.instance.client.get {
 			index Setting.ES_INDEX.value
-			type ES_TYPE
+			type esType
 			id name
 		}
 		if (user.response.exists) {
@@ -23,18 +26,10 @@ class UserDAO {
 	UserDTO put(UserDTO user) {
 		EsService.instance.client.index {
 			index Setting.ES_INDEX.value
-			type ES_TYPE
+			type esType
 			id user.id
 			source { password = user.password }
 		}
 		user
-	}
-
-	void delete(String name) {
-		EsService.instance.client.delete {
-			index Setting.ES_INDEX.value
-			type ES_TYPE
-			id name
-		}
 	}
 }
