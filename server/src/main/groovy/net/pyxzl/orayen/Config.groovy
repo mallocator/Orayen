@@ -28,7 +28,7 @@ class Config {
 		CERTPASS('Orayen'),							// The password used to lock the client, key and trust store
 		ES_INDEX('orayen'),							// ElasticSearch index name
 		ES_CONFIG(null),							// ElasticSearch configuration file
-		NO_COLOR(''),								// Disables coloured command line output when set to "true"
+		NO_COLOR(''),								// Disables colored command line output when set to "true"
 
 		def value
 		final defaultValue

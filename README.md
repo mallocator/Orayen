@@ -7,13 +7,13 @@ A configuration management service with libraries for a number of languages to r
 This is both a library and a stand alone server along with clients available to integrate your current software with. The service provided is a central location, where you can store and update your configuration and push it to all clients connected to the server. Features included are:
 
 * Web interface for editing
-* Push capability to send config changes to clients
+* Push capability to send configuration changes to clients
 * Poll capabilities, so that client can ask for configuration changes
-* Built in clustering capabilities
+* Built in clustering of service
 * Service can be used as a library and integrated into any (java) application
 * Notification Service
 * JSON representation of all configuration
-* Optional SSL encrypted communication
+* SSL encrypted communication/authentication
 * JSON REST interface
 * Client implementations for a number of languages
 
@@ -75,7 +75,7 @@ _config (Default = config/orayen.json)_
 Location of the configuration file, that will override all default and command line options
 
 _env (Default = local)_  
-Possible Environments are: dev, local and prod
+Possible Environments are: dev, embedded and prod
 
 _port (Default = 7443)_  
 Server port on which REST calls can be made via https authentication
@@ -150,13 +150,45 @@ TODO show how to create a keystore with your own certificate
 The server uses elasticsearch for storing data and as a clustering infrastructure. If you want to customize the elasticsearch configuration beyond the index that is used, you can do so by specifying an external configuration file.
 Other then that, the default elasticsearch configuration actually depends on the environment that the server was set up with.
 
-TODO Link to Elasticsearch
-TODO examples for a custom config
+For details on how to set up an elasticsearch configuration refer to http://www.elasticsearch.org/guide/. 
+
+An example for a configuration would look like this:
+
+	{
+	    "cluster": {
+	        "name": "orayen"
+	    },
+	    "path": {
+	        "data": "data/elasticsearch"
+	    },
+	    "http": {
+	    	"enabled": false
+	    },
+	    "index": {
+	        "analysis": {
+	            "filter": {
+	                "ngram_filter": {
+	                    "type": "nGram",
+	                    "min_gram": 2,
+	                    "max_gram": 50
+	                }
+	            },
+	            "analyzer": {
+	                "ngram_analyzer": {
+	                    "type": "custom",
+	                    "tokenizer": "standard",
+	                    "filter": "lowercase,ngram_filter"
+	                }
+	            }
+	        }
+	    }
+	}
+	
+Note that the Orayen server depends on using the ngram_analyzer, so make sure to include it in your custom configuration.
 
 ## Roadmap
 
-T.B.D.  
-(let's build something working first, and then promise things)
+* Allow to make changes to server configuration at runtime (not all options will be applied without a restart)
 
 ## Changelog
 
