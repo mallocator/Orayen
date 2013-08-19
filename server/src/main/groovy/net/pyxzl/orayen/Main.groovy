@@ -116,6 +116,7 @@ class Main {
 			final Component component = new Component()
 			component.clients.add(Protocol.FILE)
 			final Server server = component.servers.add(Protocol.HTTPS, globalPort.value as int)
+
 			final Series<Parameter> parameters = server.context.parameters
 			parameters.add('sslContextFactory', 'org.restlet.ext.ssl.PkixSslContextFactory')
 			parameters.add('keystorePath', Setting.KEYSTORE.value)
@@ -126,8 +127,11 @@ class Main {
 			parameters.add('truststoreType', 'JKS')
 			parameters.add('truststorePassword', Setting.CERTPASS.value)
 			parameters.add('disableCrl', 'true')
+			parameters.add('allowRenegotiate', 'true')
 			if (type == 'REST') {
 				parameters.add('needClientAuthentication', 'true')
+			} else {
+				parameters.add('wantClientAuthentication', 'false')
 			}
 			component.defaultHost.attach('', restlet)
 			try {
