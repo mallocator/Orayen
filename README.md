@@ -19,6 +19,18 @@ This is both a library and a stand alone server along with clients available to 
 
 The server itself is relying on Elasticsearch for storing and replicating data. The configuration can be customized to support larger clusters and additional nodes, as well as features such as gateways and rivers. The service itself is written in Groovy. The license for the code is the Apache 2.0 License.
 
+## Clients
+
+There are a number of clients in various languages maintained by the core project, which aim to showcase an implementation of the Orayen protocol. Here is the list of available clients:
+
+* [C#](clients/c%23) - implementation pending
+* [Go](clients/go) - implementation pending
+* [Java Client](clients/java) - Alpha Version
+* [Node.js](clients/nodejs) - implementation pending
+* [PHP](clients/php) - implementation pending
+* [Python](clients/python) - implementation pending
+* [Ruby](clients/ruby) - implementation pending
+
 ## The Configuration Service
 There are two cases for which this service might be used:
 
