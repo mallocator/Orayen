@@ -75,7 +75,8 @@ class EsService {
 			'client',
 			'config',
 			'user',
-			'ssl'
+			'ssl',
+			'group'
 		].each { String type ->
 			this.createMapping(type)
 		}

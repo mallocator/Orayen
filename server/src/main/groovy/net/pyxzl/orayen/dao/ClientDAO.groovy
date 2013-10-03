@@ -1,35 +1,35 @@
 package net.pyxzl.orayen.dao
 
 import net.pyxzl.orayen.Config.Setting
-import net.pyxzl.orayen.dto.UserDTO
+import net.pyxzl.orayen.dto.ClientDTO
 import net.pyxzl.orayen.service.EsService
 
 @Singleton
-class UserDAO extends DAO {
+class ClientDAO extends DAO {
 	@Override
 	protected Object getEsType() {
-		'users'
+		'clients'
 	}
 
-	UserDTO get(String name) {
+	ClientDTO get(String clientId) {
 		def user = EsService.instance.client.get {
 			index Setting.ES_INDEX.value
 			type esType
-			id name
+			id clientId
 		}
-		return this.parseJson(user.response.sourceAsBytes)
+		this.parseJson(user.response.sourceAsBytes)
 	}
 
-	UserDTO put(UserDTO user) {
+	ClientDTO put(ClientDTO client) {
 		EsService.instance.client.index {
 			index Setting.ES_INDEX.value
 			type esType
-			id user.id
+			id client.id
 			source {
-				name = user.name
-				password = user.password
-				created = user.created
-				lastUpdate = user.lastUpdate
+				address = client.address
+				name = client.name
+				lastUpdate = client.lastUpdate
+				created = client.created
 			}
 		}
 		user

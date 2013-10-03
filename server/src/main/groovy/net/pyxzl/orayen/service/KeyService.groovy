@@ -43,13 +43,12 @@ class KeyService {
 	private static final String KEY_ALG = 'RSA'
 	private static final String SIG_ALG = 'SHA1WithRSAEncryption'
 	private static final char[] SERVER_PASSWORD = Setting.CERTPASS.value as char[]
-	private static final String ES_TYPE = 'ssl'
 	private static final Date NOW = new Date()
 	private static final Date UNTIL = new Date(NOW.year + 10, NOW.month, NOW.day)
 	private final X500PrivateCredential rootCredential
 	private final X500PrivateCredential interCredential
 	private final X500PrivateCredential endCredential
-	private final boolean keyExist = false
+	private boolean keyExist = false
 
 	private KeyService() {
 		Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider())

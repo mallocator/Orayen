@@ -19,6 +19,13 @@ abstract class DAO {
 		null
 	}
 
+	protected <T> T parseJson(final String source) {
+		if (source != null) {
+			return this.mapper.readValue(source, T.class)
+		}
+		null
+	}
+
 	DAO delete(String elementId) {
 		EsService.instance.client.delete {
 			index Setting.ES_INDEX.value

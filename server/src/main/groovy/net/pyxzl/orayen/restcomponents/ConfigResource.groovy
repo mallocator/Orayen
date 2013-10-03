@@ -1,9 +1,9 @@
 package net.pyxzl.orayen.restcomponents
 
 import groovy.util.logging.Slf4j
+import net.pyxzl.orayen.dao.ConfigDAO
 import net.pyxzl.orayen.dto.ConfigDTO
 
-import org.elasticsearch.common.joda.time.DateTime
 import org.restlet.resource.Delete
 import org.restlet.resource.Get
 import org.restlet.resource.Put
@@ -15,13 +15,13 @@ import org.restlet.resource.ServerResource
  */
 @Slf4j
 class ConfigResource extends ServerResource {
-	private ConfigDTO	config
+	private String id
+	private String version
 
 	@Override
 	protected void doInit() throws ResourceException {
-		final String id = (String) request.attributes.get('clientid')
-		final String version = (String) request.attributes.get('version')
-		this.config = new ConfigDTO(id, DateTime.now(), '{"config":"example"}')
+		this.id = (String) request.attributes.get('configType')
+		this.version = (String) request.attributes.get('version')
 	}
 
 	/**
@@ -30,14 +30,16 @@ class ConfigResource extends ServerResource {
 	 */
 	@Get
 	ConfigDTO getConfig() {
-		this.config
+		ConfigDAO.instance.get(this.id, this.version)
 	}
 
 	@Put
 	storeConfig(final ConfigDTO config) {
+		ConfigDAO.instance.put(config)
 	}
 
 	@Delete
-	deleteConfig(final ConfigDTO config) {
+	deleteConfig() {
+		ConfigDAO.instance.delete(id, version)
 	}
 }

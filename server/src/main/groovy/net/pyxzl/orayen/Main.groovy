@@ -7,7 +7,6 @@ import net.pyxzl.orayen.restcomponents.ConfigResource
 import net.pyxzl.orayen.restcomponents.EsVerifier
 import net.pyxzl.orayen.restcomponents.KeystoreResource
 import net.pyxzl.orayen.restcomponents.LocalhostFilter
-import net.pyxzl.orayen.restcomponents.RegisterResource
 import net.pyxzl.orayen.restcomponents.UserResource
 import net.pyxzl.orayen.service.CertGenerator
 
@@ -44,10 +43,8 @@ class Main {
 		router.setName('REST Router')
 
 		router.attach('/config', ConfigResource)
-		router.attach('/config/{clientid}', ConfigResource)
-		router.attach('/config/{clientid}/{version}', ConfigResource)
-		router.attach('/register', RegisterResource)
-		router.attach('/register/{clientid}', RegisterResource)
+		router.attach('/config/{configType}', ConfigResource)
+		router.attach('/config/{configType}/{version}', ConfigResource)
 		router.attach('/client', ConfigResource)
 		router.attach('/client/{clientid}', ClientResource)
 		router.attach('/keystore', KeystoreResource)

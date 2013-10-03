@@ -10,26 +10,51 @@ class ConfigDAO extends DAO {
 		'config'
 	}
 
-	ConfigDTO get(final String configId) {
-		def config = EsService.instance.client.get {
-			index Setting.ES_INDEX.value
-			type esType
-			id configId
+	ConfigDTO get(final String label, final String version) {
+		// TODO test this!
+		def config = EsService.instance.client.search {
+			indices Setting.ES_INDEX.value
+			types esType
+			source {
+				query {
+					bool {
+						must[term(configType: label)]
+						should[term(version: version)]
+					}
+				}
+				sort [version { order : 'desc' }]
+			}
 		}
-		return this.parseJson(config.response.sourceAsBytes)
+		return this.parseJson(config.response.hits[1].sourceAsString)
 	}
 
 	ConfigDTO put(final ConfigDTO config) {
 		EsService.instance.client.index {
 			index Setting.ES_INDEX.value
 			type esType
-			id config.id
 			source {
+				configType = config.label
 				lastUpdate = config.lastUpdate
 				payload = config.payload
 				version = config.version
 			}
 		}
 		config
+	}
+
+	@Override
+	public DAO delete(final String label, final String version) {
+		EsService.instance.client.deleteByQuery {
+			indices Setting.ES_INDEX.value
+			types esType
+			source {
+				query {
+					bool {
+						must[term(configType: label)]
+						should[term(version: version)]
+					}
+				}
+			}
+		}
 	}
 }

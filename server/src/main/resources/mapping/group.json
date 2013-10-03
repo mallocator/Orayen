@@ -1,0 +1,17 @@
+{
+	group:{
+		_timestamp: { enabled:true },
+		properties: {
+			clientIds: {
+				type: "string",
+                store: "yes",
+                index: "not_analyzed"
+            },
+            groupIds: {
+				type: "string",
+                store: "yes",
+                index: "not_analyzed"
+            }
+		}
+	}
+}
