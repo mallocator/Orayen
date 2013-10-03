@@ -1,290 +1,297 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<groupId>net.pyxzl</groupId>
-	<artifactId>orayen</artifactId>
-	<name>Orayen Server</name>
-	<description>A configuration management service with libraries for a number of languages to register for changes and query for updates.</description>
-	<url>https://github.com/mallocator/Orayen</url>
-	<inceptionYear>2013</inceptionYear>
-	<version>0.0.1-SNAPSHOT</version>
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>net.pyxzl</groupId>
+    <artifactId>orayen</artifactId>
+    <name>Orayen Server</name>
+    <description>A configuration management service with libraries for a number of languages to register for changes and query for updates.</description>
+    <url>https://github.com/mallocator/Orayen</url>
+    <inceptionYear>2013</inceptionYear>
+    <version>0.0.1-SNAPSHOT</version>
 
-	<licenses>
-		<license>
-			<name>Apache License 2.0</name>
-			<url>http://www.spdx.org/licenses/Apache-2.0</url>
-		</license>
-	</licenses>
+    <licenses>
+        <license>
+            <name>Apache License 2.0</name>
+            <url>http://www.spdx.org/licenses/Apache-2.0</url>
+        </license>
+    </licenses>
 
-	<scm>
-		<url>https://github.com/mallocator/Orayen</url>
-		<connection>scm:git:git://github.com/mallocator/Orayen.git</connection>
-		<developerConnection>scm:git:git@github.com:mallocator/Orayen.git</developerConnection>
-	</scm>
+    <scm>
+        <url>https://github.com/mallocator/Orayen</url>
+        <connection>scm:git:git://github.com/mallocator/Orayen.git</connection>
+        <developerConnection>scm:git:git@github.com:mallocator/Orayen.git</developerConnection>
+    </scm>
 
-	<issueManagement>
-		<system>GitHub</system>
-		<url>https://github.com/mallocator/Orayen/issues</url>
-	</issueManagement>
+    <issueManagement>
+        <system>GitHub</system>
+        <url>https://github.com/mallocator/Orayen/issues</url>
+    </issueManagement>
 
-	<developers>
-		<developer>
-			<name>Ravi Gairola</name>
-			<email>mallox@pyxzl.net</email>
-			<id>mallocator</id>
-			<url>https://github.com/mallocator</url>
-		</developer>
-	</developers>
+    <developers>
+        <developer>
+            <name>Ravi Gairola</name>
+            <email>mallox@pyxzl.net</email>
+            <id>mallocator</id>
+            <url>https://github.com/mallocator</url>
+        </developer>
+    </developers>
 
-	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<maven.build.timestamp.format>yyyy-MM-dd HH:mm</maven.build.timestamp.format>
-		<java.version>1.7</java.version>
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.build.timestamp.format>yyyy-MM-dd HH:mm</maven.build.timestamp.format>
+        <java.version>1.7</java.version>
 
-		<version.elasticsearch>0.90.2</version.elasticsearch>
-		<version.elasticsearch.groovy>1.5.0</version.elasticsearch.groovy>
-		<version.restlet>2.1.2</version.restlet>
-		<version.bouncycastle>1.49</version.bouncycastle>
+        <version.elasticsearch>0.90.2</version.elasticsearch>
+        <version.elasticsearch.groovy>1.5.0</version.elasticsearch.groovy>
+        <version.restlet>2.1.2</version.restlet>
+        <version.bouncycastle>1.49</version.bouncycastle>
+        <version.bcrypt>0.3m</version.bcrypt>
 
-		<version.groovy>2.1.5</version.groovy>
-		<version.groovy.compiler>2.8.0-01</version.groovy.compiler>
-		<version.groovy.batch>2.1.5-03</version.groovy.batch>
+        <version.groovy>2.1.5</version.groovy>
+        <version.groovy.compiler>2.8.0-01</version.groovy.compiler>
+        <version.groovy.batch>2.1.5-03</version.groovy.batch>
 
-		<version.logback>1.0.13</version.logback>
-		<version.groovy.testng>2.1.5</version.groovy.testng>
-		<version.jmockit>1.3</version.jmockit>
+        <version.logback>1.0.13</version.logback>
+        <version.groovy.testng>2.1.5</version.groovy.testng>
+        <version.jmockit>1.3</version.jmockit>
 
-		<version.maven.compiler>3.1</version.maven.compiler>
-		<version.maven.surefire>2.14.1</version.maven.surefire>
-		<version.codenarc>0.18-1</version.codenarc>
-		<version.maven.jar>2.4</version.maven.jar>
-		<version.maven.dependency>2.8</version.maven.dependency>
-		<version.maven.resources>2.6</version.maven.resources>
-	</properties>
+        <version.maven.compiler>3.1</version.maven.compiler>
+        <version.maven.surefire>2.14.1</version.maven.surefire>
+        <version.codenarc>0.18-1</version.codenarc>
+        <version.maven.jar>2.4</version.maven.jar>
+        <version.maven.dependency>2.8</version.maven.dependency>
+        <version.maven.resources>2.6</version.maven.resources>
+    </properties>
 
-	<repositories>
-		<repository>
-			<id>maven-restlet</id>
-			<name>Public online Restlet repository</name>
-			<url>http://maven.restlet.org</url>
-		</repository>
-	</repositories>
+    <repositories>
+        <repository>
+            <id>maven-restlet</id>
+            <name>Public online Restlet repository</name>
+            <url>http://maven.restlet.org</url>
+        </repository>
+    </repositories>
 
-	<dependencies>
-		<!-- Clustered NoSQL Database -->
-		<dependency>
-			<groupId>org.elasticsearch</groupId>
-			<artifactId>elasticsearch-lang-groovy</artifactId>
-			<version>${version.elasticsearch.groovy}</version>
-		</dependency>
-		<!-- REST Server -->
-		<dependency>
-			<groupId>org.restlet.jse</groupId>
-			<artifactId>org.restlet.ext.jackson</artifactId>
-			<version>${version.restlet}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.restlet.jse</groupId>
-			<artifactId>org.restlet.ext.ssl</artifactId>
-			<version>${version.restlet}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.restlet.jse</groupId>
-			<artifactId>org.restlet.ext.slf4j</artifactId>
-			<version>${version.restlet}</version>
-			<exclusions>
-				<exclusion>
-					<artifactId>slf4j-api</artifactId>
-					<groupId>org.slf4j</groupId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-		<dependency>
-			<groupId>org.bouncycastle</groupId>
-			<artifactId>bcprov-jdk15on</artifactId>
-			<version>${version.bouncycastle}</version>
-		</dependency>
+    <dependencies>
+        <!-- Clustered NoSQL Database -->
+        <dependency>
+            <groupId>org.elasticsearch</groupId>
+            <artifactId>elasticsearch-lang-groovy</artifactId>
+            <version>${version.elasticsearch.groovy}</version>
+        </dependency>
+        <!-- REST Server -->
+        <dependency>
+            <groupId>org.restlet.jse</groupId>
+            <artifactId>org.restlet.ext.jackson</artifactId>
+            <version>${version.restlet}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.restlet.jse</groupId>
+            <artifactId>org.restlet.ext.ssl</artifactId>
+            <version>${version.restlet}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.restlet.jse</groupId>
+            <artifactId>org.restlet.ext.slf4j</artifactId>
+            <version>${version.restlet}</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>slf4j-api</artifactId>
+                    <groupId>org.slf4j</groupId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.bouncycastle</groupId>
+            <artifactId>bcprov-jdk15on</artifactId>
+            <version>${version.bouncycastle}</version>
+        </dependency>
+        <!-- BCrypt used for password encryption -->
+        <dependency>
+            <groupId>org.mindrot</groupId>
+            <artifactId>jbcrypt</artifactId>
+            <version>${version.bcrypt}</version>
+        </dependency>
 
 
-		<!-- Required for logging -->
-		<dependency>
-			<groupId>ch.qos.logback</groupId>
-			<artifactId>logback-classic</artifactId>
-			<version>${version.logback}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.codehaus.groovy</groupId>
-			<artifactId>groovy-all</artifactId>
-			<version>${version.groovy}</version>
-		</dependency>
-		<!-- Required for mocking during tests -->
-		<dependency>
-			<groupId>com.googlecode.jmockit</groupId>
-			<artifactId>jmockit</artifactId>
-			<version>${version.jmockit}</version>
-			<scope>test</scope>
-		</dependency>
-		<!-- Required for running next generation tests -->
-		<dependency>
-			<groupId>org.codehaus.groovy</groupId>
-			<artifactId>groovy-testng</artifactId>
-			<version>${version.groovy.testng}</version>
-			<scope>test</scope>
-			<exclusions>
-				<exclusion>
-					<groupId>junit</groupId>
-					<artifactId>junit</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-	</dependencies>
+        <!-- Required for logging -->
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>${version.logback}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.codehaus.groovy</groupId>
+            <artifactId>groovy-all</artifactId>
+            <version>${version.groovy}</version>
+        </dependency>
+        <!-- Required for mocking during tests -->
+        <dependency>
+            <groupId>com.googlecode.jmockit</groupId>
+            <artifactId>jmockit</artifactId>
+            <version>${version.jmockit}</version>
+            <scope>test</scope>
+        </dependency>
+        <!-- Required for running next generation tests -->
+        <dependency>
+            <groupId>org.codehaus.groovy</groupId>
+            <artifactId>groovy-testng</artifactId>
+            <version>${version.groovy.testng}</version>
+            <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>junit</groupId>
+                    <artifactId>junit</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+    </dependencies>
 
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-surefire-plugin</artifactId>
-				<version>${version.maven.surefire}</version>
-				<configuration>
-					<argLine>-javaagent:"${settings.localRepository}"/com/googlecode/jmockit/jmockit/${version.jmockit}/jmockit-${version.jmockit}.jar
-						-Xmx512m -XX:-UseSplitVerifier</argLine>
-					<forkMode>once</forkMode>
-					<properties>
-						<property>
-							<name>reporter</name>
-							<value>org.testng.reporters.XMLReporter</value>
-						</property>
-					</properties>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>${version.maven.compiler}</version>
-				<configuration>
-					<compilerId>groovy-eclipse-compiler</compilerId>
-					<source>${java.version}</source>
-					<target>${java.version}</target>
-					<testSource>${java.version}</testSource>
-					<testTarget>${java.version}</testTarget>
-					<compilerArgument>-Xlint</compilerArgument>
-					<showDeprecation>true</showDeprecation>
-					<showWarnings>true</showWarnings>
-				</configuration>
-				<dependencies>
-					<dependency>
-						<groupId>org.codehaus.groovy</groupId>
-						<artifactId>groovy-eclipse-compiler</artifactId>
-						<version>${version.groovy.compiler}</version>
-					</dependency>
-					<dependency>
-						<groupId>org.codehaus.groovy</groupId>
-						<artifactId>groovy-eclipse-batch</artifactId>
-						<version>${version.groovy.batch}</version>
-					</dependency>
-				</dependencies>
-			</plugin>
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>codenarc-maven-plugin</artifactId>
-				<version>${version.codenarc}</version>
-				<executions>
-					<execution>
-						<phase>package</phase>
-						<goals>
-							<goal>codenarc</goal>
-						</goals>
-					</execution>
-				</executions>
-				<configuration>
-					<groovyVersion>${version.groovy}</groovyVersion>
-					<sourceDirectory>src/main/groovy</sourceDirectory>
-					<rulesetfiles>rulesets/basic.xml,rulesets/braces.xml,rulesets/concurrency.xml,rulesets/convention.xml,rulesets/design.xml,rulesets/dry.xml,rulesets/exceptions.xml,rulesets/generic.xml,rulesets/groovyism.xml,rulesets/imports.xml,rulesets/logging.xml,rulesets/security.xml,rulesets/serialization.xml,rulesets/unnecessary.xml,rulesets/unused.xml</rulesetfiles>
-				</configuration>
-			</plugin>
-			<!-- Used to create the main jar in the package directory -->
-			<plugin>
-				<artifactId>maven-jar-plugin</artifactId>
-				<version>${version.maven.jar}</version>
-				<configuration>
-					<archive>
-						<manifest>
-							<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
-							<mainClass>net.pyxzl.orayen.Main</mainClass>
-							<addClasspath>true</addClasspath>
-						</manifest>
-						<manifestEntries>
-							<name>${project.name}</name>
-							<version>${project.version}</version>
-							<package>${project.groupId}.${project.artifactId}</package>
-							<compiledFor>Java ${java.version}</compiledFor>
-							<compiledOn>${os.name} ${os.arch} ${os.version}</compiledOn>
-							<compiledBy>${user.name}</compiledBy>
-							<buildTime>${maven.build.timestamp}</buildTime>
-						</manifestEntries>
-					</archive>
-					<outputDirectory>${project.build.directory}/package</outputDirectory>
-					<finalName>Orayen</finalName>
-				</configuration>
-			</plugin>
-			<!-- Used to copy dependendent libraries into package directory -->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-dependency-plugin</artifactId>
-				<version>${version.maven.dependency}</version>
-				<executions>
-					<execution>
-						<phase>package</phase>
-						<goals>
-							<goal>copy-dependencies</goal>
-						</goals>
-						<configuration>
-							<includeScope>compile</includeScope>
-							<outputDirectory>${project.build.directory}/package/lib</outputDirectory>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-			<!-- Used to copy shell scripts and web content to the package directory -->
-			<plugin>
-				<artifactId>maven-resources-plugin</artifactId>
-				<version>${version.maven.resources}</version>
-				<executions>
-					<execution>
-						<id>shell scripts</id>
-						<phase>package</phase>
-						<goals>
-							<goal>copy-resources</goal>
-						</goals>
-						<configuration>
-							<outputDirectory>${project.build.directory}/package/</outputDirectory>
-							<resources>
-								<resource>
-									<directory>src/main/shell</directory>
-									<filtering>true</filtering>
-								</resource>
-							</resources>
-						</configuration>
-					</execution>
-					<execution>
-						<id>web content</id>
-						<phase>package</phase>
-						<goals>
-							<goal>copy-resources</goal>
-						</goals>
-						<configuration>
-							<outputDirectory>${project.build.directory}/package/web</outputDirectory>
-							<resources>
-								<resource>
-									<directory>src/main/web</directory>
-									<filtering>true</filtering>
-								</resource>
-							</resources>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-		</plugins>
-	</build>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>${version.maven.surefire}</version>
+                <configuration>
+                    <argLine>-javaagent:"${settings.localRepository}"/com/googlecode/jmockit/jmockit/${version.jmockit}/jmockit-${version.jmockit}.jar
+                        -Xmx512m -XX:-UseSplitVerifier</argLine>
+                    <forkMode>once</forkMode>
+                    <properties>
+                        <property>
+                            <name>reporter</name>
+                            <value>org.testng.reporters.XMLReporter</value>
+                        </property>
+                    </properties>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>${version.maven.compiler}</version>
+                <configuration>
+                    <compilerId>groovy-eclipse-compiler</compilerId>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
+                    <testSource>${java.version}</testSource>
+                    <testTarget>${java.version}</testTarget>
+                    <compilerArgument>-Xlint</compilerArgument>
+                    <showDeprecation>true</showDeprecation>
+                    <showWarnings>true</showWarnings>
+                </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.codehaus.groovy</groupId>
+                        <artifactId>groovy-eclipse-compiler</artifactId>
+                        <version>${version.groovy.compiler}</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>org.codehaus.groovy</groupId>
+                        <artifactId>groovy-eclipse-batch</artifactId>
+                        <version>${version.groovy.batch}</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>codenarc-maven-plugin</artifactId>
+                <version>${version.codenarc}</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>codenarc</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <groovyVersion>${version.groovy}</groovyVersion>
+                    <sourceDirectory>src/main/groovy</sourceDirectory>
+                    <rulesetfiles>rulesets/basic.xml,rulesets/braces.xml,rulesets/concurrency.xml,rulesets/convention.xml,rulesets/design.xml,rulesets/dry.xml,rulesets/exceptions.xml,rulesets/generic.xml,rulesets/groovyism.xml,rulesets/imports.xml,rulesets/logging.xml,rulesets/security.xml,rulesets/serialization.xml,rulesets/unnecessary.xml,rulesets/unused.xml</rulesetfiles>
+                </configuration>
+            </plugin>
+            <!-- Used to create the main jar in the package directory -->
+            <plugin>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>${version.maven.jar}</version>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+                            <mainClass>net.pyxzl.orayen.Main</mainClass>
+                            <addClasspath>true</addClasspath>
+                        </manifest>
+                        <manifestEntries>
+                            <name>${project.name}</name>
+                            <version>${project.version}</version>
+                            <package>${project.groupId}.${project.artifactId}</package>
+                            <compiledFor>Java ${java.version}</compiledFor>
+                            <compiledOn>${os.name} ${os.arch} ${os.version}</compiledOn>
+                            <compiledBy>${user.name}</compiledBy>
+                            <buildTime>${maven.build.timestamp}</buildTime>
+                        </manifestEntries>
+                    </archive>
+                    <outputDirectory>${project.build.directory}/package</outputDirectory>
+                    <finalName>Orayen</finalName>
+                </configuration>
+            </plugin>
+            <!-- Used to copy dependendent libraries into package directory -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>${version.maven.dependency}</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <includeScope>compile</includeScope>
+                            <outputDirectory>${project.build.directory}/package/lib</outputDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <!-- Used to copy shell scripts and web content to the package directory -->
+            <plugin>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>${version.maven.resources}</version>
+                <executions>
+                    <execution>
+                        <id>shell scripts</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}/package/</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>src/main/shell</directory>
+                                    <filtering>true</filtering>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>web content</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}/package/web</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>src/main/web</directory>
+                                    <filtering>true</filtering>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 </project>

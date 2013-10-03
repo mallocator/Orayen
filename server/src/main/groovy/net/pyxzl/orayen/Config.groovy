@@ -15,12 +15,13 @@ class Config {
 	 */
 	static enum Setting {
 		CONFIG('config/orayen.json'),				// Location of the configuration file, that will override all default and command line options
-		ENV('embedded'),								// Possible Environments are: dev, local and prod
+		ENV('embedded'),							// Possible Environments are: dev, embedded and prod
 		PORT('7443'),								// Server port on which REST calls can be made via https authentication
 		LOCAL_PORT('7000'),							// Server port on which REST calls can be made without https, but only from localhost
 		ADMIN_PORT('8443'),							// Server port on which the admin interface can be accessed via https
 		LOCAL_ADMIN_PORT('8000'),					// Server port on which the admin interface can be accssed without https, but only from localhost
 		ADMIN_ROOT('file:///var/www/orayen/'),		// Directory in which to look for the web root that holds the admin interface
+		BCRYPT_SALT('a123c65da901f'),				// Salt used to encrypt user passwords
 		ADMIN_PASSWORD('password'),					// The default password for the admin user to the admin interface
 		KEYSTORE('config/keystore.jks'),			// Keystore location that holds the certificate information for the server https connector
 		TRUSTSTORE('config/truststore.jks'),		// Truststore location that holds the certificate information for clients trying to access the server

@@ -5,27 +5,15 @@ import net.pyxzl.orayen.service.ContentPayloadConverter
 import org.codehaus.jackson.annotate.JsonProperty
 import org.codehaus.jackson.map.annotate.JsonDeserialize
 import org.codehaus.jackson.map.annotate.JsonSerialize
-import org.elasticsearch.common.joda.time.DateTime
 
 
 /**
  * @author Ravi Gairola (mallox@pyxzl.net)
  */
-class ConfigDTO {
-	String	id
-	DateTime	lastUpdate
+class ConfigDTO extends DTO {
+	String label
 	String version
-	String	payload
-
-	@JsonProperty
-	Long getLastUpdate() {
-		this.lastUpdate.millis
-	}
-
-	@JsonProperty
-	void setLastUpdate(long lastUpdate) {
-		this.lastUpdate = new DateTime(lastUpdate)
-	}
+	String payload
 
 	@JsonSerialize(using = ContentPayloadConverter.Serializer.class)
 	@JsonProperty
