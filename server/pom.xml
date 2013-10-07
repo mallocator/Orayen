@@ -48,7 +48,7 @@
         <version.bouncycastle>1.49</version.bouncycastle>
         <version.bcrypt>0.3m</version.bcrypt>
 
-        <version.groovy>2.1.5</version.groovy>
+        <version.groovy>2.1.7</version.groovy>
         <version.groovy.compiler>2.8.0-01</version.groovy.compiler>
         <version.groovy.batch>2.1.5-03</version.groovy.batch>
 
@@ -62,6 +62,7 @@
         <version.maven.jar>2.4</version.maven.jar>
         <version.maven.dependency>2.8</version.maven.dependency>
         <version.maven.resources>2.6</version.maven.resources>
+        <version.maven.clean>2.5</version.maven.clean>
     </properties>
 
     <repositories>
@@ -112,8 +113,6 @@
             <artifactId>jbcrypt</artifactId>
             <version>${version.bcrypt}</version>
         </dependency>
-
-
         <!-- Required for logging -->
         <dependency>
             <groupId>ch.qos.logback</groupId>
@@ -125,6 +124,7 @@
             <artifactId>groovy-all</artifactId>
             <version>${version.groovy}</version>
         </dependency>
+
         <!-- Required for mocking during tests -->
         <dependency>
             <groupId>com.googlecode.jmockit</groupId>
@@ -291,6 +291,27 @@
                         </configuration>
                     </execution>
                 </executions>
+            </plugin>
+            <!-- Used to clean up other folders generated during testing and building -->
+            <plugin>
+                <artifactId>maven-clean-plugin</artifactId>
+                <version>${version.maven.clean}</version>
+                <configuration>
+                    <filesets>
+                        <fileset>
+                            <directory>config</directory>
+                        </fileset>
+                        <fileset>
+                            <directory>data</directory>
+                        </fileset>
+                        <fileset>
+                            <directory>logs</directory>
+                        </fileset>
+                        <fileset>
+                            <directory>test-output</directory>
+                        </fileset>
+                    </filesets>
+                </configuration>
             </plugin>
         </plugins>
     </build>
