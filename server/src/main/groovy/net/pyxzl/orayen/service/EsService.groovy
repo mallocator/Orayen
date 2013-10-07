@@ -35,8 +35,6 @@ class EsService {
 		log.info 'Starting ElasticSearch Database'
 		if (node == null) {
 			node = NodeBuilder.nodeBuilder().settings(this.settings).node()
-		}
-		if (client == null) {
 			client = new GClient(node.client())
 		}
 		this.checkMapping()
@@ -61,10 +59,6 @@ class EsService {
 		if (node != null) {
 			node.close()
 			node = null
-		}
-		if (client != null) {
-			client.client.close()
-			client = null
 		}
 		log.info 'ElasticSearch Database has been stopped'
 		this
