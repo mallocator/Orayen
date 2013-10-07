@@ -4,7 +4,9 @@ A configuration management service with libraries for a number of languages to r
 
 ## Overview
 
-This is both a library and a stand alone server along with clients available to integrate your current software with. The service provided is a central location, where you can store and update your configuration and push it to all clients connected to the server. Features included are:
+This is both a library and a stand alone server along with clients available to integrate your current software with. 
+The service provided is a central location, where you can store and update your configuration and push it to all clients 
+connected to the server. Features included are:
 
 * Web interface for editing
 * Push capability to send configuration changes to clients
@@ -17,11 +19,14 @@ This is both a library and a stand alone server along with clients available to 
 * JSON REST interface
 * Client implementations for a number of languages
 
-The server itself is relying on Elasticsearch for storing and replicating data. The configuration can be customized to support larger clusters and additional nodes, as well as features such as gateways and rivers. The service itself is written in Groovy. The license for the code is the Apache 2.0 License.
+The server itself is relying on Elasticsearch for storing and replicating data. The configuration can be customized to 
+support larger clusters and additional nodes, as well as features such as gateways and rivers. The service itself is 
+written in Groovy. The license for the code is the Apache 2.0 License.
 
 ## Clients
 
-There are a number of clients in various languages maintained by the core project, which aim to showcase an implementation of the Orayen protocol. Here is the list of available clients:
+There are a number of clients in various languages maintained by the core project, which aim to showcase an implementation 
+of the Orayen protocol. Here is the list of available clients:
 
 * [C#](clients/c%23) - implementation pending
 * [Go](clients/go) - implementation pending
@@ -35,31 +40,37 @@ There are a number of clients in various languages maintained by the core projec
 There are two cases for which this service might be used:
 
 ### A million clients and more
-Clients register with a number of user defined attributes at the server, which in turn will be able to create groups of clients based on these attributes.
-Using the service for example for mobile devices, different configurations can be returned depending on model type, country, language, or whatever attribute you want to supply.
+Clients register with a number of user defined attributes at the server, which in turn will be able to create groups of 
+clients based on these attributes. Using the service for example for mobile devices, different configurations can be 
+returned depending on model type, country, language, or whatever attribute you want to supply.
 
-The service will allow you to target very specifically which clients should receive which updates. You can, for example, target a small group to test your configuration changes and then roll them out to the rest of your client population.
+The service will allow you to target very specifically which clients should receive which updates. You can, for example, 
+target a small group to test your configuration changes and then roll them out to the rest of your client population.
 
-Additionally the service will allow to do rolling updates, so that not all clients will get the update at the same time, but subgroups at a time. A number of options will be available, such as updating based on attribute differences, number of changes per minute, or regions.
+Additionally the service will allow to do rolling updates, so that not all clients will get the update at the same time,
+but subgroups at a time. A number of options will be available, such as updating based on attribute differences, number
+of changes per minute, or regions.
 
 ### Managing a cluster or two
 A cluster where each node needs a configuration can use this service to update configurations on all nodes at once.
 The server will allow to separate different instances into tiers, groups, regions, or however you plan to manage your set up.
 
-The configuration will also allow to use local variable as configuration place holders, so that preconfigured values such as host names, IP addressed, etc. can be injected from the node receiving the configuration change.  
+The configuration will also allow to use local variable as configuration place holders, so that preconfigured values such as 
+host names, IP addressed, etc. can be injected from the node receiving the configuration change.  
 
 ## Configuration of the Configuration Service
 (yes this just got Meta)
 
 ### Options
 
-There are 2 ways to set options for the server: Command line arguments and a configuration file. Any configuration that is supposed to be read from the command line has to be prefixed with "orayen_".
+There are 2 ways to set options for the server: Command line arguments and a configuration file. Any configuration that is
+supposed to be read from the command line has to be prefixed with `orayen_`.  
 Here is an example for passing a custom config location to the server:
 
     java -jar Orayen.jar -Dorayen_config=/etc/orayen.conf
     
-Configuration in the config file is stored in a json format. The default location is in a relative path stored at config/orayen.json.
-A sample configuration would look like this:
+Configuration in the config file is stored in a json format. The default location is in a relative path stored at
+config/orayen.json. A sample configuration would look like this:
 
     {
     	"env": "prod",
@@ -72,7 +83,8 @@ A sample configuration would look like this:
 Any option that is neither set via command line, nor in a config file will fall back to its default.
 All options have default setting.
 
-A future feature will allow to change configuration options while running the service, using the admin interface. (After all that's the use case we're building this for, might as well use it)
+A future feature will allow to change configuration options while running the service, using the admin interface. (After 
+all that's the use case we're building this for, might as well use it)
 
 Options are read in with the following descending priority:
 
@@ -81,52 +93,83 @@ Options are read in with the following descending priority:
 * Configuration File
 * Default Settings
 
-TODO write proper description for each config
+`config (Default = config/orayen.json)`  
+Location of the configuration file, that will override all default and command line options. 
+If no file is found and the specified location, the configuration will just skip that source and use the other sources in 
+the order stated above to configure the service.
 
-_config (Default = config/orayen.json)_  
-Location of the configuration file, that will override all default and command line options
+`env (Default = embedded)`  
+Environments help with a certain default configuration mainly for ElasticSearch, making it easier to set up the service for 
+specific tasks. The possible Values are:
 
-_env (Default = local)_  
-Possible Environments are: dev, embedded and prod
+* prod: Use this when setting up a server as a cluster. ElasticSearch will be configured to connect to other nodes.
+* embedded: Use this setting when you want a standalone server that does not connect to other ElasticSearch nodes.
+* dev: This setting is only used for development and will not guarantee that any configuration is stored beyond a restart. 
+This should only be used for debugging purposes
 
-_port (Default = 7443)_  
-Server port on which REST calls can be made via https authentication
+`port (Default = 7443)`  
+Server port on which REST calls can be made via https authentication. Your clients will typically connect to the server on this
+port and use client certificates to authenticate. This port can be set to '0' to disable it.
 
-_local\_port (Default = 7000)_  
-Server port on which REST calls can be made without https, but only from localhost
+`local_port (Default = 7000)`  
+Server port on which REST calls can be made without https, but only from localhost. This will allow local clients to connect
+without using any client certificates. This can be used for debugging or simple setups where only one client is on the same 
+machine. Another scenario would be to set up a proxy service to allow certain instances in the own infrastructure to access the
+service without any client authentication. This port can be set to '0' to disable it.
 
-_admin\_port (Default = 8443)_  
-Server port on which the admin interface can be accessed via https
+`admin_port (Default = 8443)`  
+Server port on which the admin interface can be accessed via https. This should be the default for any admin wishing to connect
+to the admin interface, as this will ensure that communication between the client and server is secured. This port can be set
+ to '0' to disable it.
 
-_local\_admin\_port (Default = 8000)_  
-Server port on which the admin interface can be accssed without https, but only from localhost
+`local_admin_port (Default = 8000)`  
+Server port on which the admin interface can be accssed without https, but only from localhost. This is mainly used for debugging
+purposes so that an admin can connect from localhost without having to use an ssl certificate. This port can be set  to '0' to 
+disable it.
 
-_admin\_root (Default = file:///var/www/orayen/)_
-Directory in which to look for the web root that holds the admin interface
+`admin_root (Default = file:///var/www/orayen/)`
+Directory in which to look for the web root that holds the admin interface. In case you want to server the web interface files from
+a seperate location, this is where it can be configured. The web interface is a completely independent component written in html5 and
+Javascript and only needs to be served from web server to function properly.
 
-_admin\_password (Default = password)_  
-The default password for the admin user to the admin interface
+`bcrypt_salt (Default = <salt>)`  
+Set the salt for encrypting user passwords in database. For higher security it is recommended that you change this value, as the 
+default value can be found in the source code and be used to crack passwords, should an attacker get hold of the encrypted values
+in your database.
 
-_keystore (Default = config/keystore.jks)_  
-Keystore location that holds the certificate information for the server https connector
+`admin_password (Default = password)`  
+The default password for the admin user to the admin interface. This password will be set automatically when the server is restarted 
+and no admin user is found in the database.
 
-_truststore (Default = config/truststore.jks)_  
-Truststore location that holds the certificate information for clients trying to access the server
+`keystore (Default = config/keystore.jks)`  
+Keystore location that holds the certificate information for the server https connector. The certificates generated by the server
+are self signed. If you want to use signed certificates, make sure that your trust chain is set up properly and the naming is according
+to the generated certificates. You will also want to delete all cached certificates from the database, if certificates have been
+generated before.
 
-_certstore (Default = config/certs/)_  
-Directory in which client certificates will be stored
+`truststore (Default = config/truststore.jks)`  
+Truststore location that holds the certificate information for clients trying to access the server.
 
-_certpass (Default = Orayen)_  
-The password used to lock the client, key and trust store
+`certpass (Default = Orayen)`
+The password used to lock the key and trust store.
 
-_es\_index (Default = orayen)_  
-ElasticSearch index name
+`es_index (Default = orayen)`
+This will configure the name of the elasticsearch index that is used to store all service related data. If you're running multiple 
+independent Orayen services on the __same__ ElasticSerch cluster, you will have to define a separate index for each one of these. 
+Make sure to use lower case when defining the index.
 
-_ES\_CONFIG (Default = built in config)_  
-ElasticSearch configuration file
+`ES_CONFIG (Default = built in config)`
+This setting will allow you to use a custom ElasticSearch configuration file, which allows even more fine grained configuration of this
+service. The ElasticSearch cluster is in effect the Orayen cluster, as all communication between nodes is done via ElasticSearch. If this
+setting is left empty, then the configuration that is used actually depends on the environment set through the `env` config.
+The default configurations can be found here: [dev](server/src/main/resources/elasticsearch-dev.json),
+[embedded](server/src/main/resources/elasticsearch-embedded.json), [prod](server/src/main/resources/elasticsearch-prod.json).  
+For more information on how to configure ElasticSearch, take a look at the [documentation](http://www.elasticsearch.org/guide/).
 
-_no\_color (Default = false)_  
-Disables coloured command line output when set to "true"
+`no_color (Default = false)`  
+Disables coloured command line output when set to "true". As some environment are not happy about color codes in log messages, you can
+use this setting to disable colored output on the command line. Log messages in log files are never color coded, as most tools do not 
+work well with shell color codes, when trying to read such files.
 
 ### Web Interface Access
 The admin interface is your go to place for all configuration changes and management of clients. Here you will be able to change/create configurations, manage your clients in groups, and roll out updates to specified targets.
@@ -201,6 +244,7 @@ Note that the Orayen server depends on using the ngram_analyzer, so make sure to
 ## Roadmap
 
 * Allow to make changes to server configuration at runtime (not all options will be applied without a restart)
+* Allow to upload certificates via web interface, so that installing custom/signed certificates is easier.
 
 ## Changelog
 
