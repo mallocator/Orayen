@@ -1,5 +1,19 @@
 package net.pyxzl.orayen.service
 
+import net.pyxzl.orayen.Config.Setting
+import net.pyxzl.orayen.dao.CredentialsDAO
+
+import org.bouncycastle.asn1.x509.BasicConstraints
+import org.bouncycastle.asn1.x509.Extension
+import org.bouncycastle.asn1.x509.KeyUsage
+import org.bouncycastle.cert.X509v3CertificateBuilder
+import org.bouncycastle.cert.jcajce.JcaX509CertificateConverter
+import org.bouncycastle.cert.jcajce.JcaX509ExtensionUtils
+import org.bouncycastle.cert.jcajce.JcaX509v3CertificateBuilder
+import org.bouncycastle.operator.ContentSigner
+import org.bouncycastle.operator.jcajce.JcaContentSignerBuilder
+import org.bouncycastle.util.io.pem.PemWriter
+
 import groovy.util.logging.Slf4j
 
 import java.security.Key
@@ -16,25 +30,13 @@ import java.security.cert.X509Certificate
 import javax.security.auth.x500.X500Principal
 import javax.security.auth.x500.X500PrivateCredential
 
-import net.pyxzl.orayen.Config.Setting
-import net.pyxzl.orayen.dao.CredentialsDAO
-
-import org.bouncycastle.asn1.x509.BasicConstraints
-import org.bouncycastle.asn1.x509.KeyUsage
-import org.bouncycastle.asn1.x509.X509Extensions
-import org.bouncycastle.util.io.pem.PemWriter
-import org.bouncycastle.x509.X509V1CertificateGenerator
-import org.bouncycastle.x509.X509V3CertificateGenerator
-import org.bouncycastle.x509.extension.AuthorityKeyIdentifierStructure
-import org.bouncycastle.x509.extension.SubjectKeyIdentifierStructure
-
 /**
  * @author Ravi Gairola (mallox@pyxzl.net)
  */
-@SuppressWarnings('deprecation')
 @Slf4j
-@Singleton
+@Singleton(strict = false)
 class KeyService {
+	private static final String BC = org.bouncycastle.jce.provider.BouncyCastleProvider.PROVIDER_NAME
 	private static final String ROOT_ALIAS = 'root'
 	private static final String INTERMEDIATE_ALIAS = 'intermediate'
 	private static final String END_ENTITY_ALIAS = 'end'
@@ -243,56 +245,59 @@ class KeyService {
 	}
 
 	private static X509Certificate generateRootCert(KeyPair pair) {
-		final X509V1CertificateGenerator  certGen = new X509V1CertificateGenerator()
-		certGen.serialNumber = BigInteger.valueOf(1)
-		certGen.setIssuerDN(new X500Principal('CN=Orayen CA Certificate'))
-		certGen.setSerialNumber(new BigInteger(System.currentTimeMillis()))
-		certGen.notBefore = NOW
-		certGen.notAfter = UNTIL
-		certGen.setSubjectDN(new X500Principal('CN=Orayen CA Certificate'))
-		certGen.publicKey = pair.public
-		certGen.signatureAlgorithm = SIG_ALG
-		certGen.generateX509Certificate(pair.private)
+		final X509v3CertificateBuilder certGen = new JcaX509v3CertificateBuilder(
+				new X500Principal('CN=Orayen CA Certificate'),
+				new BigInteger(System.currentTimeMillis()),
+				NOW,
+				UNTIL,
+				new X500Principal('CN=Orayen CA Certificate'),
+				pair.public
+				)
+
+		final ContentSigner sigGen = new JcaContentSignerBuilder(SIG_ALG).setProvider(BC).build(pair.private);
+		new JcaX509CertificateConverter().setProvider(BC).getCertificate(certGen.build(sigGen));
 	}
 
 	private static X509Certificate generateIntermediateCert(PublicKey intKey, PrivateKey caKey, X509Certificate caCert) {
-		final X509V3CertificateGenerator  certGen = new X509V3CertificateGenerator()
+		final X509v3CertificateBuilder certGen = new JcaX509v3CertificateBuilder(
+				caCert.subjectX500Principal,
+				new BigInteger(System.currentTimeMillis()),
+				NOW,
+				UNTIL,
+				new X500Principal('CN=Orayen Intermediate Certificate'),
+				intKey
+				)
 
-		certGen.serialNumber = BigInteger.valueOf(1)
-		certGen.setIssuerDN(caCert.subjectX500Principal)
-		certGen.setSerialNumber(new BigInteger(System.currentTimeMillis()))
-		certGen.notBefore = NOW
-		certGen.notAfter = UNTIL
-		certGen.setSubjectDN(new X500Principal('CN=Orayen Intermediate Certificate'))
-		certGen.publicKey = intKey
-		certGen.signatureAlgorithm = SIG_ALG
+		final JcaX509ExtensionUtils x509 = new JcaX509ExtensionUtils()
 
-		certGen.addExtension(X509Extensions.AuthorityKeyIdentifier, false, new AuthorityKeyIdentifierStructure(caCert))
-		certGen.addExtension(X509Extensions.SubjectKeyIdentifier, false, new SubjectKeyIdentifierStructure(intKey))
-		certGen.addExtension(X509Extensions.BasicConstraints, true, new BasicConstraints(0))
-		certGen.addExtension(X509Extensions.KeyUsage, true, new KeyUsage(KeyUsage.digitalSignature | KeyUsage.keyCertSign | KeyUsage.cRLSign))
+		certGen.addExtension(Extension.authorityKeyIdentifier, false, x509.createAuthorityKeyIdentifier(caCert))
+		certGen.addExtension(Extension.subjectKeyIdentifier, false, x509.createSubjectKeyIdentifier(intKey))
+		certGen.addExtension(Extension.basicConstraints, true, new BasicConstraints(0))
+		certGen.addExtension(Extension.keyUsage, true, new KeyUsage(KeyUsage.digitalSignature | KeyUsage.keyCertSign | KeyUsage.cRLSign))
 
-		certGen.generateX509Certificate(caKey)
+		final ContentSigner sigGen = new JcaContentSignerBuilder(SIG_ALG).setProvider(BC).build(caKey);
+		new JcaX509CertificateConverter().setProvider(BC).getCertificate(certGen.build(sigGen));
 	}
 
 	private static X509Certificate generateEndEntityCert(PublicKey entityKey, PrivateKey caKey, X509Certificate caCert) {
-		final X509V3CertificateGenerator  certGen = new X509V3CertificateGenerator()
+		final X509v3CertificateBuilder certGen = new JcaX509v3CertificateBuilder(
+				caCert.subjectX500Principal,
+				new BigInteger(System.currentTimeMillis()),
+				NOW,
+				UNTIL,
+				new X500Principal('CN=Orayen End Certificate'),
+				entityKey
+				)
 
-		certGen.serialNumber = BigInteger.valueOf(1)
-		certGen.setIssuerDN(caCert.subjectX500Principal)
-		certGen.setSerialNumber(new BigInteger(System.currentTimeMillis()))
-		certGen.notBefore = NOW
-		certGen.notAfter = UNTIL
-		certGen.setSubjectDN(new X500Principal('CN=Orayen End Certificate'))
-		certGen.publicKey = entityKey
-		certGen.signatureAlgorithm = SIG_ALG
+		final JcaX509ExtensionUtils x509 = new JcaX509ExtensionUtils()
 
-		certGen.addExtension(X509Extensions.AuthorityKeyIdentifier, false, new AuthorityKeyIdentifierStructure(caCert))
-		certGen.addExtension(X509Extensions.SubjectKeyIdentifier, false, new SubjectKeyIdentifierStructure(entityKey))
-		certGen.addExtension(X509Extensions.BasicConstraints, true, new BasicConstraints(false))
-		certGen.addExtension(X509Extensions.KeyUsage, true, new KeyUsage(KeyUsage.digitalSignature | KeyUsage.keyEncipherment))
+		certGen.addExtension(Extension.authorityKeyIdentifier, false, x509.createAuthorityKeyIdentifier(caCert))
+		certGen.addExtension(Extension.subjectKeyIdentifier, false, x509.createSubjectKeyIdentifier(entityKey))
+		certGen.addExtension(Extension.basicConstraints, true, new BasicConstraints(false))
+		certGen.addExtension(Extension.keyUsage, true, new KeyUsage(KeyUsage.digitalSignature | KeyUsage.keyEncipherment))
 
-		certGen.generateX509Certificate(caKey)
+		final ContentSigner sigGen = new JcaContentSignerBuilder(SIG_ALG).setProvider(BC).build(caKey);
+		new JcaX509CertificateConverter().setProvider(BC).getCertificate(certGen.build(sigGen));
 	}
 
 	private static KeyPair generateKeyPair() {

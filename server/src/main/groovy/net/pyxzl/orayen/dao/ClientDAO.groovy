@@ -17,7 +17,7 @@ class ClientDAO extends DAO {
 			type esType
 			id clientId
 		}
-		this.parseJson(user.response.sourceAsBytes)
+		this.parseJsonBytes(user.response.sourceAsBytes)
 	}
 
 	ClientDTO put(ClientDTO client) {

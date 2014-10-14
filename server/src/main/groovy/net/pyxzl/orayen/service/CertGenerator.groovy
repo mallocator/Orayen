@@ -1,13 +1,13 @@
 package net.pyxzl.orayen.service
 
-import groovy.util.logging.Slf4j
 import net.pyxzl.orayen.Config.Setting
+import groovy.util.logging.Slf4j
 
 /**
  * @author Ravi Gairola (mallox@pyxzl.net)
  */
 @Slf4j
-@Singleton
+@Singleton(strict = false)
 class CertGenerator {
 	private static final char[] SERVER_PASSWORD = Setting.CERTPASS.value as char[]
 

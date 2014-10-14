@@ -42,27 +42,26 @@
         <maven.build.timestamp.format>yyyy-MM-dd HH:mm</maven.build.timestamp.format>
         <java.version>1.7</java.version>
 
-        <version.elasticsearch>0.90.2</version.elasticsearch>
+        <version.elasticsearch>0.90.13</version.elasticsearch>
         <version.elasticsearch.groovy>1.5.0</version.elasticsearch.groovy>
-        <version.restlet>2.1.2</version.restlet>
-        <version.bouncycastle>1.49</version.bouncycastle>
+        <version.restlet>2.1.7</version.restlet>
+        <version.bouncycastle>1.51</version.bouncycastle>
         <version.bcrypt>0.3m</version.bcrypt>
 
-        <version.groovy>2.1.7</version.groovy>
-        <version.groovy.compiler>2.8.0-01</version.groovy.compiler>
-        <version.groovy.batch>2.1.5-03</version.groovy.batch>
+        <version.groovy>2.3.7</version.groovy>
+        <version.groovy.compiler>2.9.0-01</version.groovy.compiler>
+        <version.groovy.batch>2.3.4-01</version.groovy.batch>
 
-        <version.logback>1.0.13</version.logback>
-        <version.groovy.testng>2.1.5</version.groovy.testng>
-        <version.jmockit>1.3</version.jmockit>
+        <version.logback>1.1.2</version.logback>
+        <version.jmockit>1.12</version.jmockit>
 
-        <version.maven.compiler>3.1</version.maven.compiler>
-        <version.maven.surefire>2.14.1</version.maven.surefire>
+        <version.maven.compiler>3.2</version.maven.compiler>
+        <version.maven.surefire>2.17</version.maven.surefire>
         <version.codenarc>0.18-1</version.codenarc>
-        <version.maven.jar>2.4</version.maven.jar>
-        <version.maven.dependency>2.8</version.maven.dependency>
-        <version.maven.resources>2.6</version.maven.resources>
-        <version.maven.clean>2.5</version.maven.clean>
+        <version.maven.jar>2.5</version.maven.jar>
+        <version.maven.dependency>2.9</version.maven.dependency>
+        <version.maven.resources>2.7</version.maven.resources>
+        <version.maven.clean>2.6</version.maven.clean>
     </properties>
 
     <repositories>
@@ -104,7 +103,7 @@
         </dependency>
         <dependency>
             <groupId>org.bouncycastle</groupId>
-            <artifactId>bcprov-jdk15on</artifactId>
+            <artifactId>bcpkix-jdk15on</artifactId>
             <version>${version.bouncycastle}</version>
         </dependency>
         <!-- BCrypt used for password encryption -->
@@ -127,7 +126,7 @@
 
         <!-- Required for mocking during tests -->
         <dependency>
-            <groupId>com.googlecode.jmockit</groupId>
+            <groupId>org.jmockit</groupId>
             <artifactId>jmockit</artifactId>
             <version>${version.jmockit}</version>
             <scope>test</scope>
@@ -136,7 +135,7 @@
         <dependency>
             <groupId>org.codehaus.groovy</groupId>
             <artifactId>groovy-testng</artifactId>
-            <version>${version.groovy.testng}</version>
+            <version>${version.groovy}</version>
             <scope>test</scope>
             <exclusions>
                 <exclusion>
@@ -154,8 +153,7 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>${version.maven.surefire}</version>
                 <configuration>
-                    <argLine>-javaagent:"${settings.localRepository}"/com/googlecode/jmockit/jmockit/${version.jmockit}/jmockit-${version.jmockit}.jar
-                        -Xmx512m -XX:-UseSplitVerifier</argLine>
+                    <argLine>-Xmx512m</argLine>
                     <forkMode>once</forkMode>
                     <properties>
                         <property>
@@ -269,7 +267,6 @@
                             <resources>
                                 <resource>
                                     <directory>src/main/shell</directory>
-                                    <filtering>true</filtering>
                                 </resource>
                             </resources>
                         </configuration>
@@ -285,7 +282,6 @@
                             <resources>
                                 <resource>
                                     <directory>src/main/web</directory>
-                                    <filtering>true</filtering>
                                 </resource>
                             </resources>
                         </configuration>

@@ -1,6 +1,5 @@
 package net.pyxzl.orayen.service
 
-import groovy.util.logging.Slf4j
 import net.pyxzl.orayen.Config.Setting
 
 import org.elasticsearch.ElasticSearchException
@@ -15,12 +14,14 @@ import org.elasticsearch.indices.IndexAlreadyExistsException
 import org.elasticsearch.node.Node
 import org.elasticsearch.node.NodeBuilder
 
+import groovy.util.logging.Slf4j
+
 
 /**
  * @author Ravi Gairola (mallox@pyxzl.net)
  */
 @Slf4j
-@Singleton
+@Singleton(strict = false)
 class EsService {
 	static final String	configLocation	= 'conf/elasticsearch.json'
 	GClient				client

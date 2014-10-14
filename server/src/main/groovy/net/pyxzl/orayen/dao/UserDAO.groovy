@@ -17,7 +17,7 @@ class UserDAO extends DAO {
 			type esType
 			id name
 		}
-		return this.parseJson(user.response.sourceAsBytes)
+		return this.parseJsonBytes(user.response.sourceAsBytes)
 	}
 
 	UserDTO put(UserDTO user) {

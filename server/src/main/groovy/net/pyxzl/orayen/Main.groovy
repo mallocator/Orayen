@@ -1,6 +1,5 @@
 package net.pyxzl.orayen
 
-import groovy.util.logging.Slf4j
 import net.pyxzl.orayen.Config.Setting
 import net.pyxzl.orayen.restcomponents.ClientResource
 import net.pyxzl.orayen.restcomponents.ConfigResource
@@ -21,6 +20,8 @@ import org.restlet.routing.Filter
 import org.restlet.routing.Router
 import org.restlet.security.ChallengeAuthenticator
 import org.restlet.util.Series
+
+import groovy.util.logging.Slf4j
 
 /**
  * @author Ravi Gairola (mallox@pyxzl.net)

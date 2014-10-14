@@ -25,7 +25,7 @@ class ConfigDAO extends DAO {
 				sort [version { order : 'desc' }]
 			}
 		}
-		return this.parseJson(config.response.hits[1].sourceAsString)
+		return this.parseJsonBytes(config.response.hits[1].sourceAsString)
 	}
 
 	ConfigDTO put(final ConfigDTO config) {
@@ -42,7 +42,6 @@ class ConfigDAO extends DAO {
 		config
 	}
 
-	@Override
 	public DAO delete(final String label, final String version) {
 		EsService.instance.client.deleteByQuery {
 			indices Setting.ES_INDEX.value

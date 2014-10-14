@@ -17,7 +17,7 @@ class GroupDAO extends DAO {
 			type esType
 			id name
 		}
-		return this.parseJson(group.response.sourceAsBytes)
+		return this.parseJsonBytes(group.response.sourceAsBytes)
 	}
 
 	GroupDTO put(GroupDTO group) {

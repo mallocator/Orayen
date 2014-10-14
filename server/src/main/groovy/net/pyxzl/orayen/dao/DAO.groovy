@@ -12,7 +12,7 @@ abstract class DAO {
 
 	protected abstract getEsType()
 
-	protected <T> T parseJson(final byte[] source) {
+	protected <T> T parseJsonBytes(final byte[] source) {
 		if (source != null) {
 			return this.mapper.readValue(source, T.class)
 		}
